@@ -13,8 +13,11 @@ import {
   View,
   Dimensions
 } from 'react-native';
-import { SearchBar } from 'react-native-elements'
+import { SearchBar, Header } from 'react-native-elements'
 import ListTop from './components/ListTop'
+import HeaderApp from './components/HeaderApp'
+import SideMenu from 'react-native-side-menu'
+import Menu from './components/Menu'
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,32 +28,45 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-const remote = 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Fbanner%401176x662.png?alt=media&token=fd5d9350-7909-4ece-81c4-8c7ce081cc2d';
 
 
 export default class App extends Component<{}> {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isOpen: false
+    }
+
+  }
+
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
+
+  updateMenu(isOpen) {
+    this.setState({ isOpen })
+  }
+
   render() {
 
     const resizeMode = 'center';
     return (
-      <View style={[{ flex: 1 }, styles.container]} >
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width,
-            height: height * 0.3,
-          }}
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+
+        <SideMenu
+          menu={<Menu/>}
+          isOpen={this.state.isOpen}
+          onChange={(isOpen) => this.updateMenu(isOpen)}
         >
-          <Image
-            style={{
-              flex: 1,
-            }}
-            source={{ uri: remote }}
-          />
-        </View>
-        <ListTop />
+
+          <HeaderApp toggle={this.toggle.bind(this)} />
+
+          <ListTop />
+        </SideMenu>
+
 
       </View>
     );
@@ -59,16 +75,6 @@ export default class App extends Component<{}> {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 5,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+      backgroundColor: 'black'
+  }
+})

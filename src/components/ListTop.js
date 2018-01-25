@@ -33,7 +33,7 @@ class ListTop extends Component {
             visible: false
         };
 
-        this.handleChangeSearch = this.handleChangeSearch.bind(this);
+
 
 
     }
@@ -78,6 +78,12 @@ class ListTop extends Component {
         itemsRef.child("categories").on("value", snapshot => {
             let items = snapshot.val();
             let newState = [];
+
+            newState.push({
+                id: '',
+                categoryName: 'Todas'
+            });
+
             for (let item in items) {
                 newState.push({
                     id: item,
@@ -97,9 +103,9 @@ class ListTop extends Component {
         });
     }
 
-    handleChangeSearch(e) {
+    handleChangeCategory(id) {
         this.setState({
-            currentSearch: e.target.value
+            currentCategory: id
         }, () => { this.filterList() });
     }
 
@@ -169,6 +175,7 @@ class ListTop extends Component {
     _renderItemButtom(item) {
         return (
             <TouchableHighlight
+                onPress={() => this.handleChangeCategory(item.id)}
                 style={styles.categoryButtom}
                 key={item.id}
                 underlayColor='#fff'>
@@ -202,15 +209,11 @@ class ListTop extends Component {
         );
     };
 
-    renderHeader = () => {
-        return <SearchBar placeholder="Type Here..." lightTheme round />;
-    };
 
     render() {
         return (
-            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 }}>
+            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 , backgroundColor: 'white'}}>
                 <View>
-                    <Text style={styles.text}></Text>
                     <FlatList
                         horizontal={true}
                         ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
@@ -218,7 +221,7 @@ class ListTop extends Component {
                         data={this.state.outstandingProducts}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
-                        style={{ padding: 15 }}
+                        style={{ padding: 10 }}
                     />
                 </View>
                 <View>
@@ -229,7 +232,7 @@ class ListTop extends Component {
                         data={this.state.categoriesArray}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
-                        style={{ padding: 15 }}
+                        style={{ padding: 10 }}
                     />
                 </View>
                 <ScrollView>
@@ -245,11 +248,10 @@ class ListTop extends Component {
                                     title={`${item.name}`}
                                     titleStyle={{ fontSize: 12 }}
                                     subtitle={`$ ${item.price}`}
-                                    subtitleStyle={{ color: 'orange', fontStyle: 'italic' }}
+                                    subtitleStyle={{ color: 'orange', fontSize: 14, fontWeight: 'bold' }}
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
-
                                 />
                             )}
                             keyExtractor={item => item.id}
@@ -261,10 +263,11 @@ class ListTop extends Component {
                 <SearchBar
                     lightTheme
                     style={{ marginTop: 20 }}
+                    inputStyle={{ backgroundColor: 'orange', fontSize: 12 }}
                     round
                     onChangeText={(text) => this.setState({
                         currentSearch: text
-                    }, () => { this.filterList() }) }
+                    }, () => { this.filterList() })}
                     placeholder='Buscar...' />
             </View>
         )
@@ -276,27 +279,30 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     textButtom: {
-        color: 'white',
+        color: 'orange',
+        fontSize: 12
     },
     categoryButtom: {
-        padding: 5,
-        backgroundColor: 'orange',
+        padding: 7,
+        backgroundColor: '#454545',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 2,
-        marginTop: 5,
+        marginTop: 0,
     },
     outstandingList: {
         borderRadius: 10,
+        width: 120,
+        height: 180,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 2,
-        marginTop: 5,
+        marginTop: 0,
     },
 
 
