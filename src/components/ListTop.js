@@ -5,14 +5,17 @@ import {
     StyleSheet,
     FlatList,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    ScrollView
 } from 'react-native'
+import { List, ListItem, SearchBar } from 'react-native-elements'
 import _ from "lodash"
 import store from '../store';
 import firebase from '../firebase';
 
 
-class List extends Component {
+
+class ListTop extends Component {
 
     constructor() {
         super();
@@ -29,6 +32,9 @@ class List extends Component {
             currentSearch: store.getState().filterProducts.searchString,
             visible: false
         };
+
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);
+
 
     }
 
@@ -91,6 +97,12 @@ class List extends Component {
         });
     }
 
+    handleChangeSearch(e) {
+        this.setState({
+            currentSearch: e.target.value
+        }, () => { this.filterList() });
+    }
+
     filterList() {
         let items = this.state.allItems;
         if (this.state.currentCategory !== "") {
@@ -130,9 +142,10 @@ class List extends Component {
             products: items
         })
 
-        let outstandingProducts = _.filter(items, item => {
+        let outstandingProducts = _.filter(this.state.allItems, item => {
             return item.outstanding == true
         });
+
 
         store.dispatch({
             type: "SET_OUTSTANDING_LIST",
@@ -176,9 +189,26 @@ class List extends Component {
         )
     };
 
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        );
+    };
+
+    renderHeader = () => {
+        return <SearchBar placeholder="Type Here..." lightTheme round />;
+    };
+
     render() {
         return (
-            <View style={{ flex: 1, margin: 0 }}>
+            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 }}>
                 <View>
                     <Text style={styles.text}></Text>
                     <FlatList
@@ -202,16 +232,40 @@ class List extends Component {
                         style={{ padding: 15 }}
                     />
                 </View>
-                <View>
-                    <FlatList
-                        ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-                        renderItem={({ item }) => this._renderItem(item)}
-                        data={this.state.items}
-                        keyExtractor={(item, index) => index}
-                        showsHorizontalScrollIndicator={false}
-                        style={{ padding: 15 }}
-                    />
-                </View>
+                <ScrollView>
+                    <List
+                        containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}
+                    >
+                        <FlatList
+                            data={this.state.items}
+                            renderItem={({ item }) => (
+
+                                <ListItem
+                                    roundAvatar
+                                    title={`${item.name}`}
+                                    titleStyle={{ fontSize: 12 }}
+                                    subtitle={`$ ${item.price}`}
+                                    subtitleStyle={{ color: 'orange', fontStyle: 'italic' }}
+                                    avatar={{ uri: item.thumbnail }}
+                                    containerStyle={{ borderBottomWidth: 0 }}
+                                    keyExtractor={item => item.price}
+
+                                />
+                            )}
+                            keyExtractor={item => item.id}
+
+                        />
+                    </List>
+                </ScrollView>
+                <Text style={styles.text}></Text>
+                <SearchBar
+                    lightTheme
+                    style={{ marginTop: 20 }}
+                    round
+                    onChangeText={(text) => this.setState({
+                        currentSearch: text
+                    }, () => { this.filterList() }) }
+                    placeholder='Buscar...' />
             </View>
         )
     }
@@ -226,7 +280,7 @@ const styles = StyleSheet.create({
     },
     categoryButtom: {
         padding: 5,
-        backgroundColor: 'black',
+        backgroundColor: 'orange',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -248,4 +302,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default List
+export default ListTop

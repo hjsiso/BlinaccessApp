@@ -13,8 +13,8 @@ import {
   View,
   Dimensions
 } from 'react-native';
-import List from './components/List';
-import Slider from './components/Slider';
+import { SearchBar } from 'react-native-elements'
+import ListTop from './components/ListTop'
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,6 +26,7 @@ const instructions = Platform.select({
 });
 
 const remote = 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Fbanner%401176x662.png?alt=media&token=fd5d9350-7909-4ece-81c4-8c7ce081cc2d';
+
 
 export default class App extends Component<{}> {
   render() {
@@ -39,7 +40,7 @@ export default class App extends Component<{}> {
             top: 0,
             left: 0,
             width,
-            height: height*0.4,
+            height: height * 0.3,
           }}
         >
           <Image
@@ -49,7 +50,8 @@ export default class App extends Component<{}> {
             source={{ uri: remote }}
           />
         </View>
-        <List />
+        <ListTop />
+
       </View>
     );
   }
