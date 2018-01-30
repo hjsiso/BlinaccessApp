@@ -22,6 +22,7 @@ import Menu from './components/Menu'
 
 const { width, height } = Dimensions.get('window');
 
+
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -58,6 +59,7 @@ export default class App extends Component<{}> {
 
   render() {
 
+
     const resizeMode = 'center';
     return (
       <View style={styles.container}>
@@ -67,8 +69,8 @@ export default class App extends Component<{}> {
           onChange={(isOpen) => this.updateMenu(isOpen)}
           navigation={this.props.navigation}
         >
-          <MyStatusBar backgroundColor="#f2f2f2"  />
-          <HeaderApp navigation={this.props.navigation} toggle={this.toggle.bind(this)} />
+          <MyStatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
+          <HeaderApp navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
 
           <ListTop navigation={this.props.navigation} />
         </SideMenu>
@@ -79,9 +81,7 @@ export default class App extends Component<{}> {
   }
 }
 
-
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -89,5 +89,5 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     height: STATUSBAR_HEIGHT,
-  }
+  },
 })

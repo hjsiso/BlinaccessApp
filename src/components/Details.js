@@ -22,11 +22,6 @@ import TextGradient from 'react-native-linear-gradient'
 
 const { width, height } = Dimensions.get('window')
 
-const MyStatusBar = ({ backgroundColor, ...props }) => (
-    <View style={[styles.statusBar, { backgroundColor }]}>
-        <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-    </View>
-);
 
 
 
@@ -149,13 +144,10 @@ class Details extends Component {
 
 }
 
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
+
 const resizeMode = 'center';
 
 const styles = StyleSheet.create({
-    statusBar: {
-        height: STATUSBAR_HEIGHT,
-    },
     nameContainer: {
         backgroundColor: 'transparent'
     },

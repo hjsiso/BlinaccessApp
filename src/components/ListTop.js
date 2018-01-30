@@ -171,7 +171,7 @@ class ListTop extends Component {
                 style={styles.outstandingList}
                 key={item.id}
                 underlayColor='#fff'>
-                <Image key={item.id} style={{ width: 160, height: 160, borderRadius: 10 }} source={{ uri: item.thumbnail }} />
+                <Image key={item.id} style={{ width: 135, height: 135, borderRadius: 10}} source={{ uri: item.thumbnail }} />
             </TouchableHighlight>
         )
     };
@@ -221,7 +221,7 @@ class ListTop extends Component {
         
         return (
             <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 , backgroundColor: 'white'}}>
-                <View>
+                <View style={{marginBottom: 5}}>
                     <Text style={styles.textSubTitle}>Destacados</Text>
                     <FlatList
                         horizontal={true}
@@ -230,7 +230,7 @@ class ListTop extends Component {
                         data={this.state.outstandingProducts}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
-                        style={{ padding: 10 }}
+                        style={{ padding: 10, paddingVertical: 0 }}
                     />
                 </View>
                 <View>
@@ -288,7 +288,8 @@ const styles = StyleSheet.create({
         color: 'orange',
         fontSize: 12,
         marginLeft: 10,
-        marginTop: 10
+        marginTop: 10,
+        marginBottom: 10
     },
     categoryButtom: {
         padding: 7,
@@ -303,14 +304,17 @@ const styles = StyleSheet.create({
     },
     outstandingList: {
         borderRadius: 10,
-        width: 160,
-        height: 160,
+        width: 145,
+        height: 145,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 1,
-        marginTop: 0,
+        paddingVertical: 5,
+        padding: 5,
+        marginTop: 5,
+        marginBottom: 5
     },
 
 

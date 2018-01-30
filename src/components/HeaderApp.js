@@ -4,7 +4,8 @@ import {
     View,
     Image,
     StyleSheet,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Platform
 } from 'react-native'
 
 import { Icon } from 'react-native-elements'
@@ -43,10 +44,12 @@ const HeaderApp = props => (
 
 )
 
+const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height: 40,
+        height: APPBAR_HEIGHT,
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: 0,
