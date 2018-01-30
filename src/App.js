@@ -11,7 +11,8 @@ import {
   Text,
   Image,
   View,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import { SearchBar, Header } from 'react-native-elements'
 import ListTop from './components/ListTop'
@@ -29,6 +30,11 @@ const instructions = Platform.select({
 });
 
 
+const MyStatusBar = ({backgroundColor, ...props}) => (
+  <View style={[styles.statusBar, { backgroundColor }]}>
+    <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+  </View>
+);
 
 export default class App extends Component<{}> {
 
@@ -37,7 +43,6 @@ export default class App extends Component<{}> {
     this.state = {
       isOpen: false
     }
-
   }
 
   toggle() {
@@ -50,21 +55,22 @@ export default class App extends Component<{}> {
     this.setState({ isOpen })
   }
 
+
   render() {
 
     const resizeMode = 'center';
     return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-
+      <View style={styles.container}>
         <SideMenu
-          menu={<Menu/>}
+          menu={<Menu navigation={this.props.navigation} />}
           isOpen={this.state.isOpen}
           onChange={(isOpen) => this.updateMenu(isOpen)}
+          navigation={this.props.navigation}
         >
+          <MyStatusBar backgroundColor="#f2f2f2"  />
+          <HeaderApp navigation={this.props.navigation} toggle={this.toggle.bind(this)} />
 
-          <HeaderApp toggle={this.toggle.bind(this)} />
-
-          <ListTop />
+          <ListTop navigation={this.props.navigation} />
         </SideMenu>
 
 
@@ -73,8 +79,15 @@ export default class App extends Component<{}> {
   }
 }
 
+
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
+
+
 const styles = StyleSheet.create({
   container: {
-      backgroundColor: 'black'
+    flex: 1
+  },
+  statusBar: {
+    height: STATUSBAR_HEIGHT,
   }
 })

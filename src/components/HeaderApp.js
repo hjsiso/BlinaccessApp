@@ -12,8 +12,9 @@ import { Icon } from 'react-native-elements'
 
 
 const HeaderApp = props => (
+   
 
-    <View style={styles.container}>
+    < View style = { styles.container } >
         <TouchableWithoutFeedback onPress={() => props.toggle()}>
             <Icon
                 name='menu'
@@ -23,18 +24,22 @@ const HeaderApp = props => (
         </TouchableWithoutFeedback>
         <View style={{ marginLeft: 15 }}>
             <Image
-                style={{height: 20, width: 80}}
+                style={{ height: 20, width: 80 }}
                 source={require('../images/logo.png')}
             />
         </View>
-        <TouchableWithoutFeedback onPress={() => props.toggle()}>
+        <TouchableWithoutFeedback
+            onPress={
+                () => props.navigation.navigate('Search')
+            }
+        >
             <Icon
-                name='shopping-cart'
+                name='search'
                 color='#f50'
                 size={25}
             />
         </TouchableWithoutFeedback>
-    </View>
+    </View >
 
 )
 
@@ -44,7 +49,7 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 20,
+        marginTop: 0,
         paddingHorizontal: 10,
         backgroundColor: 'white',
         borderColor: '#f2f2f2',

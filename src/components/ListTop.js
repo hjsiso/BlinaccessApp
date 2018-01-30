@@ -17,8 +17,8 @@ import firebase from '../firebase';
 
 class ListTop extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             currentItem: null,
             items: [],
@@ -52,7 +52,7 @@ class ListTop extends Component {
                     price: items[item].price,
                     category: items[item].category,
                     outstanding: items[item].outstanding,
-                    thumbnail: items[item].images ? items[item].images[0].thumbnail : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8'
+                    thumbnail: items[item].images ? items[item].images[0].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8'
                 });
             }
 
@@ -98,7 +98,7 @@ class ListTop extends Component {
 
             store.dispatch({
                 type: "SET_CATEGORY_LIST",
-                categories: newState
+                categories: snapshot.val()
             })
         });
     }
@@ -162,12 +162,16 @@ class ListTop extends Component {
     }
 
     _renderItemImage(item) {
+        const { navigate } =  this.props.navigation
         return (
             <TouchableHighlight
+                onPress={
+                    () => navigate('Details', {item: item, currentImage: 0})
+                }
                 style={styles.outstandingList}
                 key={item.id}
                 underlayColor='#fff'>
-                <Image key={item.id} style={{ width: 120, height: 180, borderRadius: 10 }} source={{ uri: item.thumbnail }} />
+                <Image key={item.id} style={{ width: 160, height: 160, borderRadius: 10 }} source={{ uri: item.thumbnail }} />
             </TouchableHighlight>
         )
     };
@@ -209,11 +213,16 @@ class ListTop extends Component {
         );
     };
 
+   
 
     render() {
+
+        const { navigate } =  this.props.navigation
+        
         return (
             <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 , backgroundColor: 'white'}}>
                 <View>
+                    <Text style={styles.textSubTitle}>Destacados</Text>
                     <FlatList
                         horizontal={true}
                         ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
@@ -252,6 +261,9 @@ class ListTop extends Component {
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
+                                    onPress={
+                                        () => navigate('Details', {item: item, currentImage: 0})
+                                    }
                                 />
                             )}
                             keyExtractor={item => item.id}
@@ -259,16 +271,6 @@ class ListTop extends Component {
                         />
                     </List>
                 </ScrollView>
-                <Text style={styles.text}></Text>
-                <SearchBar
-                    lightTheme
-                    style={{ marginTop: 20 }}
-                    inputStyle={{ backgroundColor: 'orange', fontSize: 12 }}
-                    round
-                    onChangeText={(text) => this.setState({
-                        currentSearch: text
-                    }, () => { this.filterList() })}
-                    placeholder='Buscar...' />
             </View>
         )
     }
@@ -282,6 +284,12 @@ const styles = StyleSheet.create({
         color: 'orange',
         fontSize: 12
     },
+    textSubTitle: {
+        color: 'orange',
+        fontSize: 12,
+        marginLeft: 10,
+        marginTop: 10
+    },
     categoryButtom: {
         padding: 7,
         backgroundColor: '#454545',
@@ -290,18 +298,18 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,
         shadowRadius: 2,
-        elevation: 2,
+        elevation: 1,
         marginTop: 0,
     },
     outstandingList: {
         borderRadius: 10,
-        width: 120,
-        height: 180,
+        width: 160,
+        height: 160,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,
         shadowRadius: 2,
-        elevation: 2,
+        elevation: 1,
         marginTop: 0,
     },
 

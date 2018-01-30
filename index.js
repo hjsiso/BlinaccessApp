@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
-import App from './src/App';
+import IndexApp from './src/IndexApp';
 
-AppRegistry.registerComponent('BlinaccessApp', () => App);
+AppRegistry.registerComponent('BlinaccessApp', () => IndexApp);
