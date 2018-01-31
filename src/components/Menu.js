@@ -54,7 +54,6 @@ class Menu extends Component {
                     />
                 </View>
                 <View style={styles.avatarContainer}>
-
                     <View style={styles.avatarImage}>
                         <TouchableHighlight
                             onPress={
@@ -71,7 +70,7 @@ class Menu extends Component {
                                 () => navigate('SignIn')
                             }
                         >
-                            <Text style={styles.text}>Sig In</Text>
+                            <Text style={styles.text}>Sign In</Text>
                         </TouchableHighlight>
                     </View>
                 </View>

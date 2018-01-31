@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "176221302114",
+    "firebase_url": "https://blindaccesapp.firebaseio.com",
+    "project_id": "blindaccesapp",
+    "storage_bucket": "blindaccesapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176221302114:android:092c2deba5df000e",
+        "android_client_info": {
+          "package_name": "com.blinaccessapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176221302114-6g2kji99vpaq8okb48v22g3a7pev5i5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blinaccessapp",
+            "certificate_hash": "4a63d56de5a2f93da764f91d0f753e4e809a1c8c"
+          }
+        },
+        {
+          "client_id": "176221302114-hsmndug53qrihfoobrhujnk68d8c1ghg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA69BWqNCDgykCfJYRqK9qEgUsET-jWvP0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176221302114-gmf7jqv1qgkc8v8v61f3ekq3cq8nhuup.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.BlinaccessApp"
+              }
+            },
+            {
+              "client_id": "176221302114-hsmndug53qrihfoobrhujnk68d8c1ghg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
