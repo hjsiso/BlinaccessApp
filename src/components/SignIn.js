@@ -12,7 +12,8 @@ import {
 import store from "../store";
 import firebase, { auth } from '../firebase'
 import { Icon, SocialIcon } from 'react-native-elements'
-import { GoogleSignin } from 'react-native-google-signin'
+import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,30 +25,82 @@ class SignIn extends Component {
 
     }
 
-    login() {
-        // Add configuration settings here:
-        GoogleSignin.configure()
-            .then(() => {
-                GoogleSignin.signIn()
-                    .then((data) => {
-                        // create a new firebase credential with the token
-                        const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-                        console.dir(data)
-                        // login with credential
-                        firebase.auth().signInWithCredential(credential)
-                    })
-                    .then((currentUser) => {
-                        console.dir(currentUser)
-                        store.dispatch({
-                            type: "SET_AUTH_USER",
-                            user: currentUser
-                        });
-                        //console.log(JSON.stringify(currentUser.toJSON()))
-                    })
-                    .catch((error) => {
-                        console.log(`Login fail with error: ${error}`)
-                    })
+    facebookLogin() {
+
+
+        return LoginManager
+            .logInWithReadPermissions(['public_profile', 'email'])
+            .then((result) => {
+                if (!result.isCancelled) {
+                    console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`)
+                    // get the access token
+                    return AccessToken.getCurrentAccessToken()
+                }
             })
+            .then(data => {
+                if (data) {
+                    // create a new firebase credential with the token
+                    const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken)
+                    // login with credential
+                    return firebase.auth().signInWithCredential(credential)
+                }
+            })
+            .then((currentUser) => {
+                if (currentUser) {
+                    console.dir(currentUser)
+                }
+            })
+            .catch((error) => {
+                console.log(`Login fail with error: ${error}`)
+            })
+    }
+
+    loginGoogle() {
+
+        if (Platform.OS === 'android') {
+            // Add configuration settings here:
+            GoogleSignin.configure()
+                .then(() => {
+                    GoogleSignin.signIn()
+                        .then((data) => {
+                            // create a new firebase credential with the token
+                            const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
+                            console.dir(data)
+                            // login with credential
+                            firebase.auth().signInWithCredential(credential)
+                        })
+                        .then((currentUser) => {
+                            console.dir(currentUser)
+                            store.dispatch({
+                                type: "SET_AUTH_USER",
+                                user: currentUser
+                            });
+                            //console.log(JSON.stringify(currentUser.toJSON()))
+                        })
+                        .catch((error) => {
+                            console.log(`Login fail with error: ${error}`)
+                        })
+                })
+                
+        }
+
+        if (Platform.OS === 'ios') {
+            GoogleSignin.configure({
+                iosClientId: '176221302114-gmf7jqv1qgkc8v8v61f3ekq3cq8nhuup.apps.googleusercontent.com'
+              })
+              .then(() => {
+                 GoogleSignin.signIn()
+                 .then((user) => {
+                   console.log(user);
+                   this.setState({user: user});
+                 })
+                 .catch((err) => {
+                   console.log('WRONG SIGNIN', err);
+                 })
+                 .done();
+              });
+        }
+
     }
 
     render() {
@@ -83,13 +136,25 @@ class SignIn extends Component {
                 </View>
                 <View style={styles.avatarImage}>
                     <TouchableWithoutFeedback
-                        onPress={() => this.login()}
+                        onPress={() => this.loginGoogle()}
                     >
                         <Icon
                             raised
                             name='heartbeat'
                             type='font-awesome'
                             color='#f50'
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+                <View style={styles.avatarImage}>
+                    <TouchableWithoutFeedback
+                        onPress={() => this.facebookLogin()}
+                    >
+                        <Icon
+                            raised
+                            name='heartbeat'
+                            type='font-awesome'
+                            color='blue'
                         />
                     </TouchableWithoutFeedback>
                 </View>
