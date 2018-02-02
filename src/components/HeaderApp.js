@@ -23,7 +23,7 @@ const HeaderApp = props => (
                 size={25}
             />
         </TouchableWithoutFeedback>
-        <View style={{ marginLeft: 15 }}>
+        <View>
             <Image
                 style={{ height: 20, width: 80 }}
                 source={require('../images/logo.png')}

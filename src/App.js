@@ -71,7 +71,6 @@ export default class App extends Component<{}> {
         >
           <MyStatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
           <HeaderApp navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
-
           <ListTop navigation={this.props.navigation} />
         </SideMenu>
 

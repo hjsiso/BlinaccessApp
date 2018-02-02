@@ -32,12 +32,12 @@
 				<string>com.googleusercontent.apps.176221302114-gmf7jqv1qgkc8v8v61f3ekq3cq8nhuup</string>
 			</array>
 		</dict>
-    <dict>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>fb149755952354598</string>
-      </array>
-    </dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb149755952354598</string>
+			</array>
+		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -49,17 +49,17 @@
 			</array>
 		</dict>
 	</array>
-  <key>FacebookAppID</key>
-  <string>149755952354598</string>
-  <key>FacebookDisplayName</key>
-  <string>BlinaccessApp</string>
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>fbapi</string>
-    <string>fb-messenger-share-api</string>
-    <string>fbauth2</string>
-    <string>fbshareextension</string>
-  </array>
+	<key>FacebookAppID</key>
+	<string>149755952354598</string>
+	<key>FacebookDisplayName</key>
+	<string>BlinaccessApp</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -100,8 +100,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

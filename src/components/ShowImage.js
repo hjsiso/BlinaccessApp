@@ -4,18 +4,24 @@ import {
     View,
     Image,
     StyleSheet,
-    TouchableWithoutFeedback,
-    Dimensions
+    TouchableOpacity,
+    Dimensions,
+    Platform,
+    StatusBar
 } from 'react-native'
 import { Icon } from 'react-native-elements'
 
 const { width, height } = Dimensions.get('window')
-
+const MyStatusBar = ({ backgroundColor, ...props }) => (
+    <View style={[styles.statusBar, { backgroundColor }]}>
+        <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </View>
+);
 
 const ShowImage = props => (
 
     < View style={styles.container} >
-
+        <MyStatusBar backgroundColor="#151515" barStyle="light-content" />
         <View style={{ marginTop: 100, marginBottom: 120 }}>
             <Image
                 style={{ height: '100%', width }}
@@ -23,21 +29,23 @@ const ShowImage = props => (
             />
         </View>
         <View style={styles.closeButton}>
-            <TouchableWithoutFeedback
+            <TouchableOpacity
                 onPress={
                     () => props.navigation.goBack()
                 }
             >
                 <Icon
-                    name='close'
+                    name='chevron-left'
                     color='orange'
                     size={25}
                 />
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
         </View>
     </View >
 
 )
+
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
 const styles = StyleSheet.create({
     container: {
@@ -46,11 +54,13 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         position: 'absolute',
-        top: 45,
+        top: STATUSBAR_HEIGHT + 5,
         right: 10,
         zIndex: 2
     },
-
+    statusBar: {
+        height: STATUSBAR_HEIGHT,
+      },
 })
 
 export default ShowImage

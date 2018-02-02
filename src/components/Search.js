@@ -20,7 +20,7 @@ class Search extends Component {
             categoriesArray: [],
             currentSearch: '',
         };
-        
+
     }
 
     filterList() {
@@ -33,13 +33,13 @@ class Search extends Component {
                 );
             });
             this.setState({ items: items });
-        }else{
+        } else {
             this.setState({ items: [] });
         }
 
     }
 
-    newPushContent(item){
+    newPushContent(item) {
         this.props.navigator.push({
             ident: 'Details',
             passProps: {
@@ -49,22 +49,23 @@ class Search extends Component {
     }
 
     render() {
-        const {goBack} = this.props.navigation
+        const { goBack } = this.props.navigation
+        const { navigate } = this.props.navigation
 
         return (
             <View style={{ flex: 1, marginTop: 20, marginLeft: 0, marginRight: 0, backgroundColor: 'white' }}>
                 <View>
-                <SearchBar
-                    lightTheme
-                    style={{ marginTop: 20 }}
-                    inputStyle={{ backgroundColor: 'orange', fontSize: 12 }}
-                    round
-                    clearIcon
-                    onClearText={() => goBack()}
-                    onChangeText={(text) => this.setState({
-                        currentSearch: text
-                    }, () => { this.filterList() })}
-                    placeholder='Buscar...' />
+                    <SearchBar
+                        lightTheme
+                        style={{ marginTop: 20 }}
+                        inputStyle={{ backgroundColor: 'orange', fontSize: 12 }}
+                        round
+                        clearIcon
+                        onClearText={() => goBack()}
+                        onChangeText={(text) => this.setState({
+                            currentSearch: text
+                        }, () => { this.filterList() })}
+                        placeholder='Buscar...' />
                 </View>
                 <ScrollView>
                     <List
@@ -83,7 +84,7 @@ class Search extends Component {
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
-                                    onPress={() => this.newPushContent(item)}
+                                    onPress={() => navigate('Details', { item: item, currentImage: 0 })}
                                 />
                             )}
                             keyExtractor={item => item.id}

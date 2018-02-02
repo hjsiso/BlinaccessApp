@@ -6,6 +6,7 @@ import {
     FlatList,
     Image,
     TouchableHighlight,
+    TouchableOpacity,
     ScrollView
 } from 'react-native'
 import { List, ListItem, SearchBar } from 'react-native-elements'
@@ -164,7 +165,7 @@ class ListTop extends Component {
     _renderItemImage(item) {
         const { navigate } =  this.props.navigation
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 onPress={
                     () => navigate('Details', {item: item, currentImage: 0})
                 }
@@ -172,13 +173,13 @@ class ListTop extends Component {
                 key={item.id}
                 underlayColor='#fff'>
                 <Image key={item.id} style={{ width: 135, height: 135, borderRadius: 10}} source={{ uri: item.thumbnail }} />
-            </TouchableHighlight>
+            </TouchableOpacity>
         )
     };
 
     _renderItemButtom(item) {
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 onPress={() => this.handleChangeCategory(item.id)}
                 style={styles.categoryButtom}
                 key={item.id}
@@ -186,7 +187,7 @@ class ListTop extends Component {
                 <Text style={styles.textButtom}>
                     {item.categoryName}
                 </Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
         )
     };
 
@@ -225,8 +226,8 @@ class ListTop extends Component {
                     <Text style={styles.textSubTitle}>Destacados</Text>
                     <FlatList
                         horizontal={true}
-                        ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
                         renderItem={({ item }) => this._renderItemImage(item)}
+                        ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
                         data={this.state.outstandingProducts}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}

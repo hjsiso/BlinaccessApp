@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BlinaccessApp</string>
     <string name="facebook_app_id">149755952354598</string>
+    <string name="fb_login_protocol_scheme">fb149755952354598</string>
 </resources>

@@ -8,6 +8,7 @@ import {
     Platform,
     TouchableHighlight,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     ScrollView,
     Image,
     ImageBackground,
@@ -91,7 +92,7 @@ class Details extends Component {
                         source={{ uri: item.images[this.state.currentImage] ? item.images[this.state.currentImage].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8' }}
                     />
                 </View>
-                <TouchableHighlight
+                <TouchableOpacity
                     style={styles.closeButton}
                     onPress={() => goBack()}
                 >
@@ -100,7 +101,7 @@ class Details extends Component {
                         color="orange"
                         size={24}
                     />
-                </TouchableHighlight>
+                </TouchableOpacity>
                 <View style={styles.header}>
                 </View>
                 <View style={styles.nameContainer} >
@@ -116,8 +117,6 @@ class Details extends Component {
                 </View>
                 <View style={styles.descriptionContainer}>
                     <View style={styles.subtitle}>
-
-
                         <Icon
                             name="shopping-cart"
                             color="orange"
@@ -146,6 +145,7 @@ class Details extends Component {
 
 
 const resizeMode = 'center';
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
 const styles = StyleSheet.create({
     nameContainer: {
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         position: 'absolute',
-        top: 20,
+        top: STATUSBAR_HEIGHT + 5,
         right: 10,
         zIndex: 2
     },

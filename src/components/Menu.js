@@ -6,9 +6,11 @@ import {
     StyleSheet,
     Dimensions,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native'
-
+import store from '../store'
+import { auth } from '../firebase'
 import { Icon, SocialIcon, Badge } from 'react-native-elements'
 
 const { width, height } = Dimensions.get('window');
@@ -17,6 +19,36 @@ class Menu extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            user: null,
+            animating: false
+        }
+
+        store.subscribe(() => {
+            this.setState({
+                user: store.getState().user
+            });
+        });
+
+        console.log(store.getState());
+    }
+
+    _signOut() {
+        this.setState({
+            animating: true
+        })
+        auth.signOut()
+            .then(() => {
+                store.dispatch({
+                    type: "SET_AUTH_USER",
+                    user: null
+                });
+                this.setState({
+                    animating: false
+                })
+            })
+        this.props.isOpen = false;    
     }
 
     _renderItemsMenu() {
@@ -33,12 +65,85 @@ class Menu extends Component {
         ))
     }
 
+    _renderSignOut() {
+        if (this.state.user) {
+            return (
+                <TouchableHighlight
+                    onPress={
+                        () => this._signOut()
+                    }
+                >
+                    <View style={styles.textWithIcon}>
+                        <View style={styles.withIcon}>
+                            <Text style={styles.text}>Cerrar Sesion</Text>
+                        </View>
+                        <Icon
+                            style={styles.rightIcon}
+                            name="arrow-back"
+                            color="white"
+                            size={25}
+                        />
+                    </View>
+                </TouchableHighlight>
+
+            )
+        }
+    }
+
+    _renderAvatar() {
+        const { navigate } = this.props.navigation
+        console.log(this.state.user)
+        if (this.state.user) {
+            return (<View style={styles.avatarImage}>
+
+                <Image
+                    style={styles.avatar}
+                    source={{ uri: this.state.user.photoURL }}
+                    style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
+                />
+
+
+                <Text style={styles.text}>{this.state.user.displayName}</Text>
+
+            </View>)
+        } else {
+            return (<View style={styles.avatarImage}>
+                <TouchableHighlight
+                    onPress={
+                        () => navigate('SignIn')
+                    }
+                >
+                    <Image
+                        style={styles.avatar}
+                        source={require('../images/user.png')}
+                    />
+                </TouchableHighlight>
+                <TouchableHighlight
+                    onPress={
+                        () => navigate('SignIn')
+                    }
+                >
+                    <Text style={styles.text}>Sign In</Text>
+                </TouchableHighlight>
+            </View>)
+        }
+
+    }
+
+
+
     render() {
 
         const { navigate } = this.props.navigation
+        const animating = this.state.animating
 
         return (
             <View style={styles.menu}>
+                <ActivityIndicator
+                    animating={animating}
+                    color='#bc2b78'
+                    size="large"
+                    style={styles.activityIndicator} />
                 <View
                     style={{
                         position: 'absolute',
@@ -54,25 +159,7 @@ class Menu extends Component {
                     />
                 </View>
                 <View style={styles.avatarContainer}>
-                    <View style={styles.avatarImage}>
-                        <TouchableHighlight
-                            onPress={
-                                () => navigate('SignIn')
-                            }
-                        >
-                            <Image
-                                style={styles.avatar}
-                                source={require('../images/user.png')}
-                            />
-                        </TouchableHighlight>
-                        <TouchableHighlight
-                            onPress={
-                                () => navigate('SignIn')
-                            }
-                        >
-                            <Text style={styles.text}>Sign In</Text>
-                        </TouchableHighlight>
-                    </View>
+                    {this._renderAvatar()}
                 </View>
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.textWithIcon}>
@@ -131,13 +218,14 @@ class Menu extends Component {
                             />
                         </View>
                     </TouchableHighlight>
-                    {/*this._renderItemsMenu()*/}
+                    {this._renderSignOut()}
                 </ScrollView>
             </View>
         )
     }
 
 }
+
 
 const styles = StyleSheet.create({
     menu: {
@@ -213,7 +301,16 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingLeft: 25,
         marginTop: 5
-    }
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: height * 0.5,
+        left: width * 0.5,
+        height: 80,
+        width: 80,
+        zIndex: 100
+     },
+
 })
 
 export default Menu
