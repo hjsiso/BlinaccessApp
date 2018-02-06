@@ -22,16 +22,19 @@ class Menu extends Component {
 
         this.state = {
             user: null,
-            animating: false
+            animating: false,
+            cart: []
         }
 
         store.subscribe(() => {
             this.setState({
-                user: store.getState().user
+                user: store.getState().user,
+                cart: store.getState().cart
             });
+            //console.log("store:", store.getState());
         });
 
-        console.log(store.getState());
+        
     }
 
     _signOut() {
@@ -98,7 +101,7 @@ class Menu extends Component {
 
                 <Image
                     style={styles.avatar}
-                    source={{ uri: this.state.user.photoURL }}
+                    source={{ uri: this.state.user.photoURL}}
                     style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
                 />
 
@@ -174,7 +177,7 @@ class Menu extends Component {
                                 size={25}
                             />
                             <Badge
-                                value={3}
+                                value={this.state.cart.length}
                                 textStyle={{ color: 'orange' }}
                             />
                         </View>

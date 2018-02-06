@@ -11,15 +11,15 @@ import {
     TouchableOpacity,
     ScrollView,
     Image,
-    ImageBackground,
     Animated,
-    Vibration,
     FlatList
 } from 'react-native'
 import { Icon } from 'react-native-elements'
 import store from '../store'
 import _ from 'lodash'
+import firebase from '../firebase'
 import TextGradient from 'react-native-linear-gradient'
+import Toast from 'react-native-simple-toast';
 
 const { width, height } = Dimensions.get('window')
 
@@ -34,26 +34,58 @@ class Details extends Component {
             measuresSeason: 0,
             scrollY: new Animated.Value(0),
             categories: store.getState().categories,
+            user: store.getState().user,
             currentImage: 0,
+            cart: store.getState().cart
         }
+
+        store.subscribe(() => {
+            console.log('estado')
+            console.dir(store.getState())
+            
+            const cartId = store.getState().cartId
+            const userId = store.getState().user.uid
+            const cart = store.getState().cart
+            const itemsRef = firebase.database().ref(`carts/${userId}/${cartId}/products`)
+            itemsRef.set(cart).then(() => {
+                Toast.show('Produto agregado al carrito.')
+            }).catch((error) => {
+                Toast.show(`${error}`);
+            });
+
+        })
 
     }
 
 
 
+    _addShoppingCart(item) {
+        //navigate to Cart
+        if (store.getState().user) {
+            store.dispatch({
+                type: "ADD_TO_CART",
+                product: item.id
+            });
+
+        } else {
+            //login
+            const { navigate } = this.props.navigation
+            navigate('SignIn');
+        }
+    }
 
     _renderItemImage(item, index) {
         const { navigate } = this.props.navigation
 
         if (item) {
             return (
-                <TouchableHighlight
+                <TouchableOpacity
                     onPress={
                         () => navigate('ShowImage', { uri: item.original })
                     }
                     underlayColor='#fff'>
                     <Image key={item.id} style={{ width: 32, height: 32, borderRadius: 10, borderColor: 'orange', borderWidth: 1 }} source={{ uri: item.thumbnail }} />
-                </TouchableHighlight>
+                </TouchableOpacity>
             )
         }
 
@@ -108,20 +140,18 @@ class Details extends Component {
                     <TextGradient colors={['transparent', '#181818', '#181818']}>
                         <Text style={[styles.text, styles.titleShow]}>{item.name}</Text>
                     </TextGradient>
-                    {/*  <Text style={[styles.text, styles.subTitleText]}>
-                            {_.get(
-                                this.state.categories,
-                                `${item.category}.categoryName`
-                            )}
-                        </Text> */}
                 </View>
                 <View style={styles.descriptionContainer}>
                     <View style={styles.subtitle}>
-                        <Icon
-                            name="shopping-cart"
-                            color="orange"
-                            size={25}
-                        />
+                        <TouchableOpacity
+                            onPress={() => this._addShoppingCart(item)}
+                        >
+                            <Icon
+                                name="shopping-cart"
+                                color="orange"
+                                size={25}
+                            />
+                        </TouchableOpacity>
                         <FlatList
                             horizontal={true}
                             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}

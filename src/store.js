@@ -2,52 +2,66 @@ import { createStore } from 'redux';
 
 const reducer = (state, action) => {
     if (action.type === "SET_PRODUCT_LIST") {
-        //console.log(action.type);
-        //console.dir(action.products);
         return {
             ...state,
             products: action.products
         };
+    } else if (action.type === "SET_FILTERED_LIST") {
+        return {
+            ...state,
+            filteredProducts: action.filteredProducts
+        };
     } else if (action.type === "SET_OUTSTANDING_LIST") {
-        //console.log(action.type);
-        //console.dir(action.categories);
         return {
             ...state,
             outstandingProducts: action.outstandingProducts
         };
     } else if (action.type === "SET_CATEGORY_LIST") {
-        //console.log(action.type);
-        //console.dir(action.categories);
         return {
             ...state,
             categories: action.categories
         };
-    } else if (action.type === "SET_PRODUCT_FILTER") {
-        //console.log(action.type);
-        //console.dir(action.filterProducts);
+    } else if (action.type === "SET_CATEGORY_ARRAY") {
         return {
             ...state,
-            filterProducts: action.filterProducts
+            categoriesArray: action.categoriesArray
+        };
+    } else if (action.type === "SET_PRODUCT_FILTER") {
+        return {
+            ...state,
+            filter: action.filter
         };
     } else if (action.type === "SET_AUTH_USER") {
-        //console.log(action.type);
-        //console.dir(action.user);
         return {
             ...state,
             user: action.user
         };
-    } else if (action.type === "SET_ADMIN_USER") {  
-        //console.log(action.type);
-        //console.dir(action.isAdmin);
+    } else if (action.type === "SET_ADMIN_USER") {
         return {
             ...state,
             isAdmin: action.isAdmin
         };
+    } else if (action.type === "SET_CART_ID") {
+        return {
+            ...state,
+            cartId: action.cartId
+        };
+    } else if (action.type === "ADD_TO_CART") {
+        return {
+            ...state,
+            cart: state.cart.concat(action.product)
+        };
+    } else if (action.type === "REMOVE_FROM_CART") {
+        return {
+            ...state,
+            cart: state.cart.splice(state.cart.indexOf(action.product), 1)
+        };
     }
+
     return state;
 }
 
 
 export default createStore(reducer, {
-    products: [], outstandingProducts: [], categories: [], filterProducts: { order: 'price', category: '', searchString: '' }, user: null, isAdmin: false
+    cart: [], cartId: null, products: [], filteredProducts: [], outstandingProducts: [], categories: [], categoriesArray: [], filter: { order: 'price', category: '', searchString: '' }, user: null, isAdmin: false
 });

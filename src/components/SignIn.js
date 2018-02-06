@@ -31,17 +31,14 @@ class SignIn extends Component {
             user: store.getState().user
         }
 
-
-    }
-
-    componentDidMount() {
-        store.subscribe(() => {
+        /*store.subscribe(() => {
             this.setState({
                 user: store.getState().user
             });
-        });
+        });*/
 
     }
+
 
     facebookLogin() {
 
@@ -50,7 +47,7 @@ class SignIn extends Component {
             .then((result) => {
                 if (!result.isCancelled) {
                     //console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`)
-                    // get the access token
+  
                     return AccessToken.getCurrentAccessToken()
                 }
             })
@@ -68,6 +65,9 @@ class SignIn extends Component {
 
                     store.dispatch({
                         type: "SET_AUTH_USER",
+                        user: currentUser
+                    });
+                    this.setState({
                         user: currentUser
                     });
                 }
@@ -98,6 +98,9 @@ class SignIn extends Component {
                                 type: "SET_AUTH_USER",
                                 user: currentUser
                             });
+                            this.setState({
+                                user: currentUser
+                            });
                             //console.log(JSON.stringify(currentUser.toJSON()))
                         })
                         .catch((error) => {
@@ -125,6 +128,10 @@ class SignIn extends Component {
 
                             store.dispatch({
                                 type: "SET_AUTH_USER",
+                                user: currentUser
+                            });
+
+                            this.setState({
                                 user: currentUser
                             });
                         })

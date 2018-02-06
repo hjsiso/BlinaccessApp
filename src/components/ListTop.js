@@ -21,25 +21,32 @@ class ListTop extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentItem: null,
-            items: [],
-            allItems: [],
-            outstandingProducts: [],
-            categories: null,
-            categoriesArray: [],
-            showEditOpts: false,
-            currentOrder: store.getState().filterProducts.order,
-            currentCategory: store.getState().filterProducts.category,
-            currentSearch: store.getState().filterProducts.searchString,
-            visible: false
+            items: store.getState().filteredProducts,
+            allItems: store.getState().products,
+            outstandingProducts: store.getState().outstandingProducts,
+            categories: store.getState().categories,
+            categoriesArray: store.getState().categoriesArray,
+            currentOrder: store.getState().filter.order,
+            currentCategory: store.getState().filter.category,
+            currentSearch: store.getState().filter.searchString,
         };
 
-
+        store.subscribe(() => {
+            this.setState({
+                items: store.getState().filteredProducts,
+                allItems: store.getState().products,
+                outstandingProducts: store.getState().outstandingProducts,
+                currentCategory: store.getState().filter.category,
+                categories: store.getState().categories,
+                categoriesArray: store.getState().categoriesArray
+            });
+        });
 
 
     }
+    
 
-    componentDidMount() {
+    /*componentDidMount() {
         const itemsRef = firebase.database().ref("/");
         itemsRef.child("products").on("value", snapshot => {
             let items = snapshot.val();
@@ -54,27 +61,32 @@ class ListTop extends Component {
                     category: items[item].category,
                     outstanding: items[item].outstanding,
                     thumbnail: items[item].images ? items[item].images[0].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8'
-                });
+                }); 
+                
+
             }
 
             newState = _.orderBy(newState, this.state.currentOrder);
-
-            this.setState({
-                items: newState,
-                allItems: newState
-            }, () => { this.filterList() });
-
+            
             store.dispatch({
                 type: "SET_PRODUCT_LIST",
                 products: newState
             });
 
+ 
+
+
+
         });
 
-        this.loadCategories();
-    }
 
-    loadCategories() {
+
+        this.loadCategories();
+
+        this.filterList();
+    }*/
+
+    /*loadCategories() {
         const itemsRef = firebase.database().ref("/");
         itemsRef.child("categories").on("value", snapshot => {
             let items = snapshot.val();
@@ -92,39 +104,50 @@ class ListTop extends Component {
                 });
             }
 
-            this.setState({
-                categories: snapshot.val(),
-                categoriesArray: newState
-            });
+  
 
+            store.dispatch({
+                type: "SET_CATEGORY_ARRAY",
+                categoriesArray: newState
+            })
             store.dispatch({
                 type: "SET_CATEGORY_LIST",
                 categories: snapshot.val()
             })
         });
-    }
+    }*/
 
     handleChangeCategory(id) {
-        this.setState({
-            currentCategory: id
-        }, () => { this.filterList() });
+
+        store.dispatch({
+            type: "SET_PRODUCT_FILTER",
+            filter: {
+                order: this.state.currentOrder,
+                category: id,
+                searchString: this.state.currentSearch
+            }
+        });
+
+        this.filterList(id);
     }
 
-    filterList() {
+    filterList(categoryFilter) {
         let items = this.state.allItems;
-        if (this.state.currentCategory !== "") {
+        console.log('allItems: ')
+        console.log(items);
+        if (categoryFilter !== "") {
             items = _.filter(items, item => {
-                return item.category == this.state.currentCategory;
+                return item.category == categoryFilter;
             });
-
-            this.setState({
+            /*this.setState({
                 items: items
-            });
+            });*/
         }
         if (this.state.currentOrder !== "") {
-            this.setState({
+            items = _.orderBy(items, this.state.currentOrder)
+            /*this.setState({
                 items: _.orderBy(items, this.state.currentOrder)
-            });
+            });*/
         }
         if (this.state.currentSearch !== "") {
             items = _.filter(items, item => {
@@ -132,47 +155,38 @@ class ListTop extends Component {
                     item.name.toLowerCase().search(this.state.currentSearch.toLowerCase()) !== -1
                 );
             });
-            this.setState({ items: items });
+            /*this.setState({ items: items });*/
         }
 
         store.dispatch({
+            type: "SET_FILTERED_LIST",
+            filteredProducts: items
+        });
+
+        store.dispatch({
             type: "SET_PRODUCT_FILTER",
-            filterProducts: {
+            filter: {
                 order: this.state.currentOrder,
-                category: this.state.currentCategory,
+                category: categoryFilter,
                 searchString: this.state.currentSearch
             }
         });
 
-        store.dispatch({
-            type: "SET_PRODUCT_LIST",
-            products: items
-        })
-
-        let outstandingProducts = _.filter(this.state.allItems, item => {
-            return item.outstanding == true
-        });
-
-
-        store.dispatch({
-            type: "SET_OUTSTANDING_LIST",
-            outstandingProducts: outstandingProducts
-        })
-        this.setState({ outstandingProducts });
+        //this.setState({ outstandingProducts });
 
     }
 
     _renderItemImage(item) {
-        const { navigate } =  this.props.navigation
+        const { navigate } = this.props.navigation
         return (
             <TouchableOpacity
                 onPress={
-                    () => navigate('Details', {item: item, currentImage: 0})
+                    () => navigate('Details', { item: item, currentImage: 0 })
                 }
                 style={styles.outstandingList}
                 key={item.id}
                 underlayColor='#fff'>
-                <Image key={item.id} style={{ width: 135, height: 135, borderRadius: 10}} source={{ uri: item.thumbnail }} />
+                <Image key={item.id} style={{ width: 135, height: 135, borderRadius: 10 }} source={{ uri: item.thumbnail }} />
             </TouchableOpacity>
         )
     };
@@ -214,15 +228,15 @@ class ListTop extends Component {
         );
     };
 
-   
+
 
     render() {
 
-        const { navigate } =  this.props.navigation
-        
+        const { navigate } = this.props.navigation
+
         return (
-            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0 , backgroundColor: 'white'}}>
-                <View style={{marginBottom: 5}}>
+            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0, backgroundColor: 'white' }}>
+                <View style={{ marginBottom: 5 }}>
                     <Text style={styles.textSubTitle}>Destacados</Text>
                     <FlatList
                         horizontal={true}
@@ -263,7 +277,7 @@ class ListTop extends Component {
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
                                     onPress={
-                                        () => navigate('Details', {item: item, currentImage: 0})
+                                        () => navigate('Details', { item: item, currentImage: 0 })
                                     }
                                 />
                             )}

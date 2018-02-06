@@ -22,7 +22,7 @@ const ShowImage = props => (
 
     < View style={styles.container} >
         <MyStatusBar backgroundColor="#151515" barStyle="light-content" />
-        <View style={{ marginTop: 100, marginBottom: 120 }}>
+        <View style={{ marginTop: 60, marginBottom: 120 }}>
             <Image
                 style={{ height: '100%', width }}
                 source={{ uri: props.navigation.state.params.uri }}

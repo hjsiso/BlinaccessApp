@@ -8,6 +8,9 @@ import About from './components/About'
 import Contact from './components/Contact'
 import { StackNavigator } from 'react-navigation'
 
+console.ignoredYellowBox = [
+    'Setting a timer'
+]
 
 const IndexApp = StackNavigator({
     Home: {screen: App},
