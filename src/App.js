@@ -47,6 +47,23 @@ export default class App extends Component<{}> {
     this.state = {
       isOpen: false
     }
+
+
+    store.subscribe(() => {
+      //console.log('estado')
+      //console.dir(store.getState())
+      if (store.getState().user && store.getState().cartId) {
+        const cartId = store.getState().cartId
+        const userId = store.getState().user.uid
+        const cart = store.getState().cart
+        const itemsRef = firebase.database().ref(`carts/${userId}/${cartId}/products`)
+        itemsRef.set(cart).then(() => {
+          //console.log('Produto agregado al carrito.')
+        }).catch((error) => {
+          Toast.show(`${error}`);
+        });
+      }
+    })
   }
 
   componentDidMount() {
@@ -60,17 +77,39 @@ export default class App extends Component<{}> {
 
         const cartRef = `carts/${user.uid}`
         const itemsRef = firebase.database().ref(cartRef);
-        itemsRef.on("value", snapshot => {
-          let item = snapshot.val();
-          if (item) {
-            console.log("Existe cart open");
-            console.dir(item);
+        itemsRef.once("value", snapshot => {
+          let items = snapshot.val();
+          let cartId = "";
+          if (items) {
+            //console.log("Existe cart open");
+            //console.dir(items);
+            let products = []
+
+            for (let item in items) {
+              cartProductsRef = `${cartRef}/${item}/products`
+              cartId = item
+              products = items[item].products
+            }
+
+            store.dispatch({
+              type: "SET_CART_ID",
+              cartId: cartId
+            });
+
+            store.dispatch({
+              type: "ADD_TO_CART",
+              product: products
+            });
+
+            //console.log("state on auth");
+            //console.dir(store.getState());
+
           } else {
-            console.log("No existe cart open, se crea uno");
+            //console.log("No existe cart open, se crea uno");
 
             const newCartKey = itemsRef.push().key;
-            console.dir(newCartKey);
-            console.log(newCartKey);
+            //console.dir(newCartKey);
+            //console.log(newCartKey);
             store.dispatch({
               type: "SET_CART_ID",
               cartId: newCartKey
@@ -79,6 +118,16 @@ export default class App extends Component<{}> {
 
         });
 
+      } else {
+        store.dispatch({
+          type: "SET_CART_ID",
+          cartId: null
+        });
+
+        store.dispatch({
+          type: "INITIALIZE_CART",
+          cart: []
+        });
       }
     });
   }

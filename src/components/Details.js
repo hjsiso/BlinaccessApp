@@ -39,21 +39,6 @@ class Details extends Component {
             cart: store.getState().cart
         }
 
-        store.subscribe(() => {
-            console.log('estado')
-            console.dir(store.getState())
-            
-            const cartId = store.getState().cartId
-            const userId = store.getState().user.uid
-            const cart = store.getState().cart
-            const itemsRef = firebase.database().ref(`carts/${userId}/${cartId}/products`)
-            itemsRef.set(cart).then(() => {
-                Toast.show('Produto agregado al carrito.')
-            }).catch((error) => {
-                Toast.show(`${error}`);
-            });
-
-        })
 
     }
 
@@ -66,7 +51,7 @@ class Details extends Component {
                 type: "ADD_TO_CART",
                 product: item.id
             });
-
+            Toast.show('Produto agregado al carrito.')
         } else {
             //login
             const { navigate } = this.props.navigation
@@ -92,7 +77,7 @@ class Details extends Component {
     }
 
     render() {
-        console.log(this.props)
+        ////console.log(this.props)
 
 
         const { item } = this.props.navigation.state.params
@@ -102,10 +87,9 @@ class Details extends Component {
             outputRange: [0, 1]
         })
 
+         
         const categoryName = _.get(this.state.categories, `${item.category}.categoryName`)
-        //console.dir(this.state.categories)
-        //console.log(`id: ${item.category}`)
-        //console.log(`categoryName: ${categoryName}`)
+ 
         return (
 
 
@@ -121,7 +105,7 @@ class Details extends Component {
                 >
                     <Image
                         style={styles.thumbnail}
-                        source={{ uri: item.images[this.state.currentImage] ? item.images[this.state.currentImage].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8' }}
+                        source={{ uri: item.thumbnail }}
                     />
                 </View>
                 <TouchableOpacity
@@ -147,11 +131,14 @@ class Details extends Component {
                             onPress={() => this._addShoppingCart(item)}
                         >
                             <Icon
+                                raised
+                                reverse
                                 name="shopping-cart"
                                 color="orange"
                                 size={25}
                             />
                         </TouchableOpacity>
+                        <Text style={styles.textPrice}>{`$ ${item.price}`}</Text>
                         <FlatList
                             horizontal={true}
                             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -240,6 +227,11 @@ const styles = StyleSheet.create({
     text: {
         color: '#b3b3b3',
         fontSize: 16
+    },
+    textPrice: {
+        color: 'orange',
+        fontSize: 16,
+        marginLeft: 15
     },
     shareListIcons: {
         flexDirection: 'row',

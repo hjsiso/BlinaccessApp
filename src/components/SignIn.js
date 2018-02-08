@@ -14,6 +14,7 @@ import firebase, { auth } from '../firebase'
 import { Icon, SocialIcon } from 'react-native-elements'
 import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
+import Toast from 'react-native-simple-toast';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,14 +32,21 @@ class SignIn extends Component {
             user: store.getState().user
         }
 
-        /*store.subscribe(() => {
-            this.setState({
-                user: store.getState().user
-            });
-        });*/
+
 
     }
 
+    componentDidMount(){
+        this.unsubscribe = store.subscribe(() => {
+            this.setState({
+                user: store.getState().user
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
 
     facebookLogin() {
 
@@ -74,11 +82,12 @@ class SignIn extends Component {
             })
             .catch((error) => {
                 // console.log(`Login fail with error: ${error}`)
+                Toast.show(`Login fail with error: ${error}`);
             })
     }
 
     loginGoogle() {
-
+        //console.log(Platform.OS)    
         if (Platform.OS === 'android') {
             // Add configuration settings here:
             GoogleSignin.configure()
@@ -87,7 +96,7 @@ class SignIn extends Component {
                         .then((data) => {
                             // create a new firebase credential with the token
                             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-                            // console.dir(data)
+                             //console.dir(credential)
                             // login with credential
                             return firebase.auth().signInWithCredential(credential)
                         })
@@ -104,7 +113,8 @@ class SignIn extends Component {
                             //console.log(JSON.stringify(currentUser.toJSON()))
                         })
                         .catch((error) => {
-                            //console.log(`Login fail with error: ${error}`)
+                            console.log(`Login fail with error: ${error}`)
+                            Toast.show(`Login fail with error: ${error}`);
                         })
                 })
 
@@ -119,12 +129,12 @@ class SignIn extends Component {
                         .then((data) => {
                             // create a new firebase credential with the token
                             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-                            console.dir(data)
+                            //console.dir(data)
                             // login with credential
                             return firebase.auth().signInWithCredential(credential)
                         })
                         .then((currentUser) => {
-                            console.log(currentUser);
+                            //console.log(currentUser);
 
                             store.dispatch({
                                 type: "SET_AUTH_USER",
@@ -135,8 +145,9 @@ class SignIn extends Component {
                                 user: currentUser
                             });
                         })
-                        .catch((err) => {
-                            console.log('WRONG SIGNIN', err);
+                        .catch((error) => {
+                            //console.log('WRONG SIGNIN', error);
+                            Toast.show(`Login fail with error: ${error}`);
                         })
                 });
         }

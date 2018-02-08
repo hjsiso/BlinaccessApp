@@ -22,8 +22,7 @@ class Menu extends Component {
 
         this.state = {
             user: null,
-            animating: false,
-            cart: []
+            cart: store.getState().cart
         }
 
         store.subscribe(() => {
@@ -34,24 +33,32 @@ class Menu extends Component {
             //console.log("store:", store.getState());
         });
 
-        
+
+    }
+
+
+    _goShoppingCart(){
+        const { navigate } = this.props.navigation
+        if (this.state.user) {
+            navigate('Cart');
+        } else {
+            //login
+            navigate('SignIn');
+        }
+
     }
 
     _signOut() {
-        this.setState({
-            animating: true
-        })
+ 
         auth.signOut()
             .then(() => {
                 store.dispatch({
                     type: "SET_AUTH_USER",
                     user: null
                 });
-                this.setState({
-                    animating: false
-                })
+   
             })
-        this.props.isOpen = false;    
+        this.props.isOpen = false;
     }
 
     _renderItemsMenu() {
@@ -95,13 +102,13 @@ class Menu extends Component {
 
     _renderAvatar() {
         const { navigate } = this.props.navigation
-        console.log(this.state.user)
+        //console.log(this.state.user)
         if (this.state.user) {
             return (<View style={styles.avatarImage}>
 
                 <Image
                     style={styles.avatar}
-                    source={{ uri: this.state.user.photoURL}}
+                    source={{ uri: this.state.user.photoURL }}
                     style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
                 />
 
@@ -138,15 +145,10 @@ class Menu extends Component {
     render() {
 
         const { navigate } = this.props.navigation
-        const animating = this.state.animating
+      
 
         return (
             <View style={styles.menu}>
-                <ActivityIndicator
-                    animating={animating}
-                    color='#bc2b78'
-                    size="large"
-                    style={styles.activityIndicator} />
                 <View
                     style={{
                         position: 'absolute',
@@ -165,23 +167,29 @@ class Menu extends Component {
                     {this._renderAvatar()}
                 </View>
                 <ScrollView style={styles.scrollContainer}>
-                    <View style={styles.textWithIcon}>
-                        <View style={styles.withIcon}>
-                            <Text style={styles.text}>Carrito</Text>
+                    <TouchableHighlight
+                        onPress={
+                            () => this._goShoppingCart()
+                        }
+                    >
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                <Text style={styles.text}>Carrito</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Icon
+                                    style={styles.rightIconCart}
+                                    name="shopping-cart"
+                                    color="orange"
+                                    size={25}
+                                />
+                                <Badge
+                                    value={this.state.cart.length}
+                                    textStyle={{ color: 'orange' }}
+                                />
+                            </View>
                         </View>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Icon
-                                style={styles.rightIconCart}
-                                name="shopping-cart"
-                                color="orange"
-                                size={25}
-                            />
-                            <Badge
-                                value={this.state.cart.length}
-                                textStyle={{ color: 'orange' }}
-                            />
-                        </View>
-                    </View>
+                    </TouchableHighlight>
                     <TouchableHighlight
                         onPress={
                             () => navigate('About')
@@ -312,7 +320,7 @@ const styles = StyleSheet.create({
         height: 80,
         width: 80,
         zIndex: 100
-     },
+    },
 
 })
 

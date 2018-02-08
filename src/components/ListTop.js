@@ -133,8 +133,8 @@ class ListTop extends Component {
 
     filterList(categoryFilter) {
         let items = this.state.allItems;
-        console.log('allItems: ')
-        console.log(items);
+        //console.log('allItems: ')
+        //console.log(items);
         if (categoryFilter !== "") {
             items = _.filter(items, item => {
                 return item.category == categoryFilter;

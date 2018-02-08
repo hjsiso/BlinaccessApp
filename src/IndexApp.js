@@ -6,6 +6,7 @@ import ShowImage from './components/ShowImage'
 import SignIn from './components/SignIn'
 import About from './components/About'
 import Contact from './components/Contact'
+import Cart from './components/Cart'
 import { StackNavigator } from 'react-navigation'
 
 console.ignoredYellowBox = [
@@ -20,6 +21,7 @@ const IndexApp = StackNavigator({
     SignIn: {screen: SignIn},
     About: {screen: About},
     Contact: {screen: Contact},
+    Cart: {screen: Cart},
 },{
     headerMode: 'none',
     navigationOptions: {

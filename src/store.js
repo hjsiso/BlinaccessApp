@@ -52,9 +52,19 @@ const reducer = (state, action) => {
             cart: state.cart.concat(action.product)
         };
     } else if (action.type === "REMOVE_FROM_CART") {
+        console.log('')
+        console.log(action.product)
+        console.log(state.cart)
+        state.cart.splice(state.cart.indexOf(action.product), 1);
         return {
             ...state,
-            cart: state.cart.splice(state.cart.indexOf(action.product), 1)
+            cart: state.cart
+        };
+        console.log(state.cart)
+    } else if (action.type === "INITIALIZE_CART") {
+        return {
+            ...state,
+            cart: action.cart
         };
     }
 
