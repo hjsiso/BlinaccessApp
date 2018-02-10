@@ -52,9 +52,6 @@ const reducer = (state, action) => {
             cart: state.cart.concat(action.product)
         };
     } else if (action.type === "REMOVE_FROM_CART") {
-        console.log('')
-        console.log(action.product)
-        console.log(state.cart)
         state.cart.splice(state.cart.indexOf(action.product), 1);
         return {
             ...state,
@@ -66,6 +63,16 @@ const reducer = (state, action) => {
             ...state,
             cart: action.cart
         };
+    } else if (action.type === "CREATE_NEW_ORDER") {
+        return {
+            ...state,
+            order: action.order
+        };
+    } else if (action.type === "SET_USER_PROFILE") {
+        return {
+            ...state,
+            userProfile: action.userProfile
+        }; 
     }
 
     return state;
@@ -73,5 +80,5 @@ const reducer = (state, action) => {
 
 
 export default createStore(reducer, {
-    cart: [], cartId: null, products: [], filteredProducts: [], outstandingProducts: [], categories: [], categoriesArray: [], filter: { order: 'price', category: '', searchString: '' }, user: null, isAdmin: false
+    userProfile: null, order: null, cart: [], cartId: null, products: [], filteredProducts: [], outstandingProducts: [], categories: [], categoriesArray: [], filter: { order: 'name', category: '', searchString: '' }, user: null, isAdmin: false
 });

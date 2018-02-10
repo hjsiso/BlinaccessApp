@@ -82,6 +82,7 @@ class Details extends Component {
 
         const { item } = this.props.navigation.state.params
         const { goBack } = this.props.navigation
+        const { navigate } = this.props.navigation
         const headerNameToggle = this.state.scrollY.interpolate({
             inputRange: [this.state.measuresTitle, this.state.measuresTitle + 1],
             outputRange: [0, 1]
@@ -118,6 +119,16 @@ class Details extends Component {
                         size={24}
                     />
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.cartButton}
+                    onPress={() => navigate('Cart')}
+                >
+                    <Icon
+                        name="shopping-cart"
+                        color="orange"
+                        size={24}
+                    />
+                </TouchableOpacity>
                 <View style={styles.header}>
                 </View>
                 <View style={styles.nameContainer} >
@@ -133,9 +144,9 @@ class Details extends Component {
                             <Icon
                                 raised
                                 reverse
-                                name="shopping-cart"
+                                name="add-shopping-cart"
                                 color="orange"
-                                size={25}
+                                size={22}
                             />
                         </TouchableOpacity>
                         <Text style={styles.textPrice}>{`$ ${item.price}`}</Text>
@@ -177,6 +188,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: STATUSBAR_HEIGHT + 5,
         right: 10,
+        zIndex: 2
+    },
+    cartButton: {
+        position: 'absolute',
+        top: STATUSBAR_HEIGHT + 5,
+        left: 10,
         zIndex: 2
     },
     headerText: {

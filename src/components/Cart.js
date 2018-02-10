@@ -14,9 +14,11 @@ import {
 } from 'react-native'
 import Authorization from '../Authorization'
 import store from '../store'
+import firebase from '../firebase'
 import { SearchBar, Icon, Badge } from 'react-native-elements'
 import _ from "lodash"
 import Toast from 'react-native-simple-toast';
+import numeral from 'numeral'
 //HOC Autorizacion
 //get current user 
 //get current cart ? cart : create
@@ -36,7 +38,7 @@ const CartItem = ({ ...props }) => (
     <View style={styles.textWithIcon}>
         <View style={styles.withIcon}>
             <Text style={styles.textProductName}>{props.product.name}</Text>
-            <Text style={styles.textPrice}>$ {props.product.price}</Text>
+            <Text style={styles.textPrice}> {numeral(props.product.price).format('$ 0,0.00')}</Text>
             <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'space-between', width: 80 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -97,7 +99,9 @@ class Cart extends Component {
             totalAMount: _.sumBy(store.getState().cart, function (o) { return o.price; }),
             products: store.getState().products,
             user: store.getState().user,
-            countItems: store.getState().cart.length
+            countItems: store.getState().cart.length,
+            userProfile: store.getState().userProfile,
+            sendOk: false
         }
 
 
@@ -122,7 +126,8 @@ class Cart extends Component {
                     countItems: newCartProductsLength == prevCartProductsLength ? newCartProductsLength : prevCartProductsLength,
                     cartProducts: _.groupBy(store.getState().cart),
                     products: store.getState().products,
-                    user: store.getState().user
+                    user: store.getState().user,
+                    userProfile: store.getState().userProfile
                 }
             })
         })
@@ -142,44 +147,80 @@ class Cart extends Component {
     }
 
     _renderHeader() {
-        return (<View style={styles.headerCart}>
+        if(Object.keys(this.state.cartProducts).length > 0) {
+            return (<View style={styles.headerCart}>
 
-            <Icon
-                name="shopping-cart"
-                color="orange"
-                size={28}
-            />
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={styles.textHeader}>Shopping Cart</Text>
+                    <Text style={styles.textHeader2}>Blindaccess</Text>
+                </View>
+    
+                <View style={{ flexDirection: 'column', marginLeft: 25 }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.sendOder()
+                        }}
+                        style={styles.categoryButtom}
+                        underlayColor='#fff'>
+                        <Text style={styles.textButtom}>
+                            Procesar orden
+                        </Text>
+                        <Icon
+                            name="shopping-cart"
+                            color="orange"
+                            size={18}
+                        />
+                    </TouchableOpacity>
+                    <Text style={styles.textHeader}></Text>
+                </View>
+            </View>)
+        }else{
+            return (<View style={styles.headerCart}>
 
-            <View style={{ flexDirection: 'column' }}>
-                <Text style={styles.textHeader}>Shopping Cart</Text>
-                <Text style={styles.textHeader2}>Blindaccess</Text>
-            </View>
-            <View style={{ flexDirection: 'column', marginLeft: 25 }}>
-                <TouchableOpacity
-
-                    style={styles.categoryButtom}
-                    underlayColor='#fff'>
-                    <Text style={styles.textButtom}>
-                        Procesar orden
-                    </Text>
-                </TouchableOpacity>
-                <Text style={styles.textHeader}></Text>
-            </View>
-        </View>)
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={styles.textHeader}>Shopping Cart</Text>
+                    <Text style={styles.textHeader2}>Blindaccess</Text>
+                </View>
+    
+                
+            </View>)
+        }
+        
 
     }
 
     _renderTotals(totalOrderItems, totalOrderAmout) {
-        return (<View style={styles.textWithIcon}>
-            <View style={{ flexDirection: 'column' }}>
-                <Text style={styles.textHeader2}>Total</Text>
-                <Text style={styles.textHeader}>$ {totalOrderAmout}</Text>
-            </View>
-            <View style={{ flexDirection: 'column' }}>
-                <Text style={styles.textHeader2}>Items</Text>
-                <Text style={styles.textHeader}>{totalOrderItems}</Text>
-            </View>
-        </View>)
+
+        if(Object.keys(this.state.cartProducts).length > 0) {
+            return (<View style={styles.textWithIcon}>
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={styles.textHeader2}>Total</Text>
+                    <Text style={styles.textHeader}>{numeral(totalOrderAmout).format('$ 0,0.00')}</Text>    
+                </View>
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={styles.textHeader2}>Items</Text>
+                    <Text style={styles.textHeader}>{totalOrderItems}</Text>
+                </View>
+            </View>)
+        }else{
+            if(this.state.sendOk){
+                return (<View style={styles.textWithIcon}>
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.textHeader3}>Estimado Cliente, su orden ha sido enviada con exito</Text>
+                        <Text></Text>
+                        <Text style={styles.textHeader2}>Nuestros ejecutivos se pondrán en contacto con usted a la brevedad para concretar la compra su orden.</Text>
+                    </View>
+                </View>)
+            }else{
+                return (<View style={styles.textWithIcon}>
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.textHeader2}>Su carro esta vacio</Text>
+                    </View>
+                </View>)
+            }
+
+        }    
+        
 
     }
 
@@ -191,7 +232,7 @@ class Cart extends Component {
         return (<View style={styles.textWithIcon}>
             <View style={styles.withIcon}>
                 <Text style={styles.textProductName}>{product.name}</Text>
-                <Text style={styles.textPrice}>$ {product.price}</Text>
+                <Text style={styles.textPrice}>{product.price}</Text>
                 <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'space-between', width: 80 }}>
                     <TouchableOpacity
                         onPress={() => {
@@ -244,6 +285,40 @@ class Cart extends Component {
             return {
                 countItems: countItems
             }
+        })
+
+    }
+
+    sendOder() {
+
+        if(this.state.userProfile == null){
+            const { navigate } = this.props.navigation
+            Toast.show('Para poder procesar su orden, favor complete los datos de su perfil.');
+            setTimeout(() => { navigate('SignIn')}, 3000);
+            return false
+        }
+
+        let totalOrderAmout = 0;
+        for (product in this.state.cartProducts) {
+            const productDetail = _.find(this.state.products, { 'id': product });
+            totalOrderAmout += this.state.cartProducts[product].length * productDetail.price
+
+        }
+
+        const order = {
+            amount: totalOrderAmout,
+            products: store.getState().cart
+        }
+
+        const refUserOrder = firebase.database().ref(`orders/${this.state.user.uid}/`)
+        refUserOrder.push(order).then(() => {
+            store.dispatch({
+                type: "INITIALIZE_CART",
+                cart: []
+            });
+            this.setState({
+                sendOk: true
+            })
         })
 
     }
@@ -327,7 +402,7 @@ const styles = StyleSheet.create({
         width: width,
         borderColor: '#000',
         borderBottomWidth: 3,
-        paddingHorizontal: 20,
+        paddingHorizontal: 0,
         paddingVertical: 10,
         paddingTop: STATUSBAR_HEIGHT + 10,
         height: 50
@@ -340,7 +415,7 @@ const styles = StyleSheet.create({
     headerCart: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+
     },
     text: {
         color: '#b3b3b3',
@@ -366,6 +441,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginHorizontal: 10,
         paddingBottom: 15
+    },
+    textHeader3: {
+        color: 'green',
+        fontSize: 18,
+        marginHorizontal: 10,
+        paddingBottom: 0
     },
     textWithIcon: {
         flexDirection: 'row',
@@ -423,6 +504,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     categoryButtom: {
+        flexDirection: 'row',
         padding: 5,
         backgroundColor: 'green',
         borderRadius: 10,

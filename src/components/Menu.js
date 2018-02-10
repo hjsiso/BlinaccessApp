@@ -37,7 +37,7 @@ class Menu extends Component {
     }
 
 
-    _goShoppingCart(){
+    _goShoppingCart() {
         const { navigate } = this.props.navigation
         if (this.state.user) {
             navigate('Cart');
@@ -49,14 +49,14 @@ class Menu extends Component {
     }
 
     _signOut() {
- 
+
         auth.signOut()
             .then(() => {
                 store.dispatch({
                     type: "SET_AUTH_USER",
                     user: null
                 });
-   
+
             })
         this.props.isOpen = false;
     }
@@ -76,26 +76,47 @@ class Menu extends Component {
     }
 
     _renderSignOut() {
+        const { navigate } = this.props.navigation
+
         if (this.state.user) {
             return (
-                <TouchableHighlight
-                    onPress={
-                        () => this._signOut()
-                    }
-                >
-                    <View style={styles.textWithIcon}>
-                        <View style={styles.withIcon}>
-                            <Text style={styles.text}>Cerrar Sesion</Text>
+                <View>
+                    <TouchableHighlight
+                        onPress={
+                            () => navigate('SignIn')
+                        }
+                    >
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                <Text style={styles.text}>Mi Perfil</Text>
+                            </View>
+                            <Icon
+                                style={styles.rightIcon}
+                                name="person"
+                                color="white"
+                                size={25}
+                            />
                         </View>
-                        <Icon
-                            style={styles.rightIcon}
-                            name="arrow-back"
-                            color="white"
-                            size={25}
-                        />
-                    </View>
-                </TouchableHighlight>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        onPress={
+                            () => this._signOut()
+                        }
+                    >
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                <Text style={styles.text}>Cerrar Sesion</Text>
+                            </View>
+                            <Icon
+                                style={styles.rightIcon}
+                                name="arrow-back"
+                                color="white"
+                                size={25}
+                            />
+                        </View>
+                    </TouchableHighlight>
 
+                </View>
             )
         }
     }
@@ -105,14 +126,18 @@ class Menu extends Component {
         //console.log(this.state.user)
         if (this.state.user) {
             return (<View style={styles.avatarImage}>
+                <TouchableHighlight
+                    onPress={
+                        () => navigate('SignIn')
+                    }
+                >
+                    <Image
+                        style={styles.avatar}
+                        source={{ uri: this.state.user.photoURL }}
+                        style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
+                    />
 
-                <Image
-                    style={styles.avatar}
-                    source={{ uri: this.state.user.photoURL }}
-                    style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
-                />
-
-
+                </TouchableHighlight>
                 <Text style={styles.text}>{this.state.user.displayName}</Text>
 
             </View>)
@@ -145,7 +170,7 @@ class Menu extends Component {
     render() {
 
         const { navigate } = this.props.navigation
-      
+
 
         return (
             <View style={styles.menu}>

@@ -7,7 +7,9 @@ import {
     View,
     Dimensions,
     TouchableOpacity,
-    StatusBar
+    StatusBar,
+    Button,
+    TextInput
 } from 'react-native';
 import store from "../store";
 import firebase, { auth } from '../firebase'
@@ -15,8 +17,52 @@ import { Icon, SocialIcon } from 'react-native-elements'
 import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk'
 import Toast from 'react-native-simple-toast';
+import { TextInputMask } from 'react-native-masked-text'
+
 
 const { width, height } = Dimensions.get('window');
+
+
+/*const formStyles = {
+    ...Form.stylesheet,
+    formGroup: {
+        normal: {
+            marginBottom: 10
+        },
+    },
+    controlLabel: {
+        normal: {
+            color: 'orange',
+            fontSize: 15,
+            marginBottom: 7,
+            fontWeight: '300'
+        },
+        // the style applied when a validation error occours
+        error: {
+            color: 'red',
+            fontSize: 18,
+            marginBottom: 7,
+            fontWeight: '300'
+        }
+    },
+    textbox: {
+
+        // the style applied wihtout errors
+        normal: {
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            fontSize: 17,
+            height: 36,
+            padding: 7,
+            borderRadius: 4,
+            borderColor: '#cccccc', // <= relevant style here
+            borderWidth: 1,
+            marginBottom: 5
+        }
+    }
+}*/
+
+
 
 const MyStatusBar = ({ backgroundColor, ...props }) => (
     <View style={[styles.statusBar, { backgroundColor }]}>
@@ -29,17 +75,21 @@ class SignIn extends Component {
         super(props)
 
         this.state = {
-            user: store.getState().user
+            user: store.getState().user,
+            phone: store.getState().userProfile ? store.getState().userProfile.phone : '',
+            company: store.getState().userProfile ? store.getState().userProfile.company : ''
         }
 
-
+        
 
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.unsubscribe = store.subscribe(() => {
             this.setState({
-                user: store.getState().user
+                user: store.getState().user,
+                phone: store.getState().userProfile ? store.getState().userProfile.phone : '',
+                company: store.getState().userProfile ? store.getState().userProfile.company : ''
             });
         });
     }
@@ -55,7 +105,7 @@ class SignIn extends Component {
             .then((result) => {
                 if (!result.isCancelled) {
                     //console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`)
-  
+
                     return AccessToken.getCurrentAccessToken()
                 }
             })
@@ -96,7 +146,7 @@ class SignIn extends Component {
                         .then((data) => {
                             // create a new firebase credential with the token
                             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-                             //console.dir(credential)
+                            //console.dir(credential)
                             // login with credential
                             return firebase.auth().signInWithCredential(credential)
                         })
@@ -154,6 +204,21 @@ class SignIn extends Component {
 
     }
 
+    saveProfile() {
+        const userProfile = {
+            name: this.state.user.displayName,
+            phone: this.state.phone,
+            company: this.state.company
+        }
+        const refUserProfile = firebase.database().ref(`profile/${this.state.user.uid}/`)
+        refUserProfile.set({ userProfile}).then(() => {
+            store.dispatch({
+                type: "SET_USER_PROFILE",
+                userProfile: userProfile
+            });
+            Toast.show(`Los datos fueron guardados.`);
+        })
+    }
     _renderSignIn() {
         if (!this.state.user) {
             return (<View>
@@ -205,14 +270,51 @@ class SignIn extends Component {
                         <Image
                             style={styles.avatar}
                             source={{ uri: this.state.user.photoURL }}
-                            style={{ width: 80, height: 80, borderRadius: 40 }}
+                            style={{ width: 60, height: 60, borderRadius: 30 }}
                         />
+                        <View style={styles.avatarImage}>
+                            <Text style={styles.textWellcome}>{this.state.user.displayName}</Text>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.avatarImage}>
-                    <Text style={styles.text}>Bienvenido, {this.state.user.displayName}</Text>
-                </View>
 
+                <View style={styles.avatarImage}>
+                    <Text style={styles.text}>Por favor completa los siguientes datos de tu perfil</Text>
+                </View>
+                <View style={styles.containerForm}>
+                    <Text style={styles.textLabel}>Teléfono</Text>
+                    <TextInputMask
+                        ref={'phone'}
+                        type={'custom'}
+                        keyboardType={'numeric'}
+                        options={{
+                            mask: '(99) 99999-99999',
+                            underlineColorAndroid: "orange",
+                            selectionColor: "orange"
+                        }}
+                        style={{ color: 'orange', borderBottomWidth: 1, borderColor: 'orange' }}
+                        underlineColorAndroid="orange"
+                        selectionColor="orange"
+                        onChangeText={(text) => this.setState({ phone: text })}
+                        value={this.state.phone}
+                    />
+                    <Text style={styles.textLabel}>Empresa</Text>
+                    <TextInput
+                        ref={'company'}
+                        maxLength={50}
+                        value={this.state.company}
+                        style={{ color: 'orange', borderBottomWidth: 1, borderColor: 'orange' }}
+                        underlineColorAndroid="orange"
+                        selectionColor="orange"
+                        onChangeText={(text) => this.setState({ company: text })}
+                    />
+                    <Button
+                        title="Guardar"
+                        color="green"
+                        onPress={this.handleSubmit}
+                        style={{ marginTop: 15 }}
+                    />
+                </View>
             </View>)
 
 
@@ -221,9 +323,29 @@ class SignIn extends Component {
 
     }
 
+    removeNotNumbers(text) {
+        return text.replace(/[^0-9]+/g, '');
+    }
+
+    handleSubmit = () => {
+
+        if (this.removeNotNumbers(this.state.phone).length < 12) {
+            Toast.show(`Por favor complete el numero de teléfono`);
+            //this.refs['phone'].getElement().focus()
+        } else if (this.state.company === "" || this.state.company.length === 0) {
+            Toast.show(`Por favor indique el nombre de su compaña`);
+            //this.refs['company'].getElement().focus()
+        }else{
+            this.saveProfile()
+        }
+
+
+    }
+
     render() {
 
         const { goBack } = this.props.navigation
+        
 
         return (
 
@@ -253,6 +375,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#151515'
     },
+    containerForm: {
+        justifyContent: 'center',
+        marginTop: 0,
+        padding: 20,
+        backgroundColor: '#151515',
+    },
     closeButton: {
         position: 'absolute',
         top: STATUSBAR_HEIGHT + 5,
@@ -267,21 +395,33 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3,
         paddingHorizontal: 20,
         paddingVertical: 20,
-        marginTop: 45
+        marginTop: 5
     },
     avatar: {
         width: 80,
         height: 80,
     },
     avatarImage: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 15
+        marginTop: 10
+    },
+    textWellcome: {
+        color: 'orange',
+        fontSize: 15,
+        fontWeight: '300'
     },
     text: {
         color: '#b3b3b3',
-        fontSize: 15
+        fontSize: 12
+    },
+    textLabel: {
+        color: '#b3b3b3',
+        fontSize: 15,
+        fontWeight: '300',
+        marginBottom: 15,
+        marginTop: 5
     },
     statusBar: {
         height: STATUSBAR_HEIGHT,

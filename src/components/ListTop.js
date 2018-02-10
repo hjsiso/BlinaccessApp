@@ -26,7 +26,7 @@ class ListTop extends Component {
             outstandingProducts: store.getState().outstandingProducts,
             categories: store.getState().categories,
             categoriesArray: store.getState().categoriesArray,
-            currentOrder: store.getState().filter.order,
+            currentOrder: "name",
             currentCategory: store.getState().filter.category,
             currentSearch: store.getState().filter.searchString,
         };

@@ -75,6 +75,20 @@ export default class App extends Component<{}> {
           user: user
         });
 
+        const refUserProfile = firebase.database().ref(`profile/${user.uid}/userProfile`)
+        console.log(`profile/${user.uid}/userProfile`)
+        refUserProfile.once("value", snapshot =>  {
+          const userProfile = snapshot.val();
+          //console.dir(snapshot.val())
+          if (userProfile) {
+            store.dispatch({
+              type: "SET_USER_PROFILE",
+              userProfile: userProfile
+            });
+          }
+        })
+
+
         const cartRef = `carts/${user.uid}`
         const itemsRef = firebase.database().ref(cartRef);
         itemsRef.once("value", snapshot => {
@@ -128,6 +142,11 @@ export default class App extends Component<{}> {
           type: "INITIALIZE_CART",
           cart: []
         });
+
+        store.dispatch({
+          type: "SET_USER_PROFILE",
+          userProfile: null
+        });
       }
     });
   }
@@ -152,7 +171,7 @@ export default class App extends Component<{}> {
 
       }
 
-      newState = _.orderBy(newState, this.state.currentOrder);
+      newState = _.orderBy(newState, "name");
 
       store.dispatch({
         type: "SET_PRODUCT_LIST",
@@ -185,10 +204,7 @@ export default class App extends Component<{}> {
       let items = snapshot.val();
       let newState = [];
 
-      newState.push({
-        id: '',
-        categoryName: 'Todas'
-      });
+
 
       for (let item in items) {
         newState.push({
@@ -196,6 +212,13 @@ export default class App extends Component<{}> {
           categoryName: items[item].categoryName
         });
       }
+
+      newState = _.orderBy(newState, "categoryName");
+
+      newState.unshift({
+        id: '',
+        categoryName: 'TODAS'
+      });
 
       store.dispatch({
         type: "SET_CATEGORY_ARRAY",
