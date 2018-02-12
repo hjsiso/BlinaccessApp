@@ -199,18 +199,18 @@ class Menu extends Component {
                     >
                         <View style={styles.textWithIcon}>
                             <View style={styles.withIcon}>
-                                <Text style={styles.text}>Carrito</Text>
+                                <Text style={styles.text}>Shopping Cart</Text>
                             </View>
                             <View style={{ flexDirection: 'row' }}>
                                 <Icon
                                     style={styles.rightIconCart}
                                     name="shopping-cart"
-                                    color="orange"
+                                    color="#fc6800"
                                     size={25}
                                 />
                                 <Badge
                                     value={this.state.cart.length}
-                                    textStyle={{ color: 'orange' }}
+                                    textStyle={{ color: '#fc6800' }}
                                 />
                             </View>
                         </View>

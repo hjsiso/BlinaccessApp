@@ -20,6 +20,8 @@ import _ from 'lodash'
 import firebase from '../firebase'
 import TextGradient from 'react-native-linear-gradient'
 import Toast from 'react-native-simple-toast';
+import numeral from 'numeral'
+
 
 const { width, height } = Dimensions.get('window')
 
@@ -69,7 +71,7 @@ class Details extends Component {
                         () => navigate('ShowImage', { uri: item.original })
                     }
                     underlayColor='#fff'>
-                    <Image key={item.id} style={{ width: 32, height: 32, borderRadius: 10, borderColor: 'orange', borderWidth: 1 }} source={{ uri: item.thumbnail }} />
+                    <Image key={item.id} style={{ width: 32, height: 32, borderRadius: 10, borderColor: '#fc6800', borderWidth: 1 }} source={{ uri: item.thumbnail }} />
                 </TouchableOpacity>
             )
         }
@@ -115,7 +117,7 @@ class Details extends Component {
                 >
                     <Icon
                         name="chevron-left"
-                        color="orange"
+                        color="#fc6800"
                         size={24}
                     />
                 </TouchableOpacity>
@@ -125,7 +127,7 @@ class Details extends Component {
                 >
                     <Icon
                         name="shopping-cart"
-                        color="orange"
+                        color="#fc6800"
                         size={24}
                     />
                 </TouchableOpacity>
@@ -145,11 +147,11 @@ class Details extends Component {
                                 raised
                                 reverse
                                 name="add-shopping-cart"
-                                color="orange"
+                                color="#fc6800"
                                 size={22}
                             />
                         </TouchableOpacity>
-                        <Text style={styles.textPrice}>{`$ ${item.price}`}</Text>
+                        <Text style={styles.textPrice}>{`${numeral(item.price).format('$ 0,0.00')}`}</Text>
                         <FlatList
                             horizontal={true}
                             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         paddingLeft: 10,
         marginBottom: 10,
-        color: 'orange'
+        color: '#fc6800'
     },
     container: {
         flex: 1,
@@ -246,7 +248,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     textPrice: {
-        color: 'orange',
+        color: '#fc6800',
         fontSize: 16,
         marginLeft: 15
     },

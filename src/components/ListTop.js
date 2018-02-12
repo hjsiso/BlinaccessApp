@@ -13,6 +13,7 @@ import { List, ListItem, SearchBar } from 'react-native-elements'
 import _ from "lodash"
 import store from '../store';
 import firebase from '../firebase';
+import numeral from 'numeral'
 
 
 
@@ -135,6 +136,11 @@ class ListTop extends Component {
         let items = this.state.allItems;
         //console.log('allItems: ')
         //console.log(items);
+
+        items = _.filter(items, item => {
+            return item.topost == true;
+        });
+
         if (categoryFilter !== "") {
             items = _.filter(items, item => {
                 return item.category == categoryFilter;
@@ -271,8 +277,8 @@ class ListTop extends Component {
                                     roundAvatar
                                     title={`${item.name}`}
                                     titleStyle={{ fontSize: 12 }}
-                                    subtitle={`$ ${item.price}`}
-                                    subtitleStyle={{ color: 'orange', fontSize: 14, fontWeight: 'bold' }}
+                                    subtitle={`${numeral(item.price).format('$ 0,0.00')}`}
+                                    subtitleStyle={{ color: '#fc6800', fontSize: 14, fontWeight: 'bold' }}
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
@@ -296,15 +302,17 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     textButtom: {
-        color: 'orange',
+        color: '#fc6800',
         fontSize: 12
     },
     textSubTitle: {
-        color: 'orange',
+        color: '#fc6800',
         fontSize: 12,
+        fontWeight: '600',
         marginLeft: 10,
         marginTop: 10,
         marginBottom: 10
+
     },
     categoryButtom: {
         padding: 7,

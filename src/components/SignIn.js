@@ -32,7 +32,7 @@ const { width, height } = Dimensions.get('window');
     },
     controlLabel: {
         normal: {
-            color: 'orange',
+            color: '#fc6800',
             fontSize: 15,
             marginBottom: 7,
             fontWeight: '300'
@@ -208,9 +208,11 @@ class SignIn extends Component {
         const userProfile = {
             name: this.state.user.displayName,
             phone: this.state.phone,
-            company: this.state.company
+            company: this.state.company,
+            email: this.state.user.email,
+            photoURL: this.state.user.photoURL
         }
-        const refUserProfile = firebase.database().ref(`profile/${this.state.user.uid}/`)
+        const refUserProfile = firebase.database().ref(`profiles/${this.state.user.uid}/`)
         refUserProfile.set({ userProfile}).then(() => {
             store.dispatch({
                 type: "SET_USER_PROFILE",
@@ -289,12 +291,12 @@ class SignIn extends Component {
                         keyboardType={'numeric'}
                         options={{
                             mask: '(99) 99999-99999',
-                            underlineColorAndroid: "orange",
-                            selectionColor: "orange"
+                            underlineColorAndroid: "#fc6800",
+                            selectionColor: "#fc6800"
                         }}
-                        style={{ color: 'orange', borderBottomWidth: 1, borderColor: 'orange' }}
-                        underlineColorAndroid="orange"
-                        selectionColor="orange"
+                        style={{ color: '#fc6800', borderBottomWidth: 0, borderColor: '#fc6800' }}
+                        underlineColorAndroid="#fc6800"
+                        selectionColor="#fc6800"
                         onChangeText={(text) => this.setState({ phone: text })}
                         value={this.state.phone}
                     />
@@ -303,9 +305,9 @@ class SignIn extends Component {
                         ref={'company'}
                         maxLength={50}
                         value={this.state.company}
-                        style={{ color: 'orange', borderBottomWidth: 1, borderColor: 'orange' }}
-                        underlineColorAndroid="orange"
-                        selectionColor="orange"
+                        style={{ color: '#fc6800', borderBottomWidth: 0, borderColor: '#fc6800' }}
+                        underlineColorAndroid="#fc6800"
+                        selectionColor="#fc6800"
                         onChangeText={(text) => this.setState({ company: text })}
                     />
                     <Button
@@ -357,7 +359,7 @@ class SignIn extends Component {
                     >
                         <Icon
                             name='chevron-left'
-                            color='orange'
+                            color='#fc6800'
                             size={25}
                         />
                     </TouchableOpacity>
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     textWellcome: {
-        color: 'orange',
+        color: '#fc6800',
         fontSize: 15,
         fontWeight: '300'
     },

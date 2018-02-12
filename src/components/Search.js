@@ -58,7 +58,7 @@ class Search extends Component {
                     <SearchBar
                         lightTheme
                         style={{ marginTop: 20 }}
-                        inputStyle={{ backgroundColor: 'orange', fontSize: 12 }}
+                        inputStyle={{ backgroundColor: '#fc6800', fontSize: 12 }}
                         round
                         clearIcon
                         onClearText={() => goBack()}
@@ -80,7 +80,7 @@ class Search extends Component {
                                     title={`${item.name}`}
                                     titleStyle={{ fontSize: 12 }}
                                     subtitle={`$ ${item.price}`}
-                                    subtitleStyle={{ color: 'orange', fontSize: 14, fontWeight: 'bold' }}
+                                    subtitleStyle={{ color: '#fc6800', fontSize: 14, fontWeight: 'bold' }}
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}

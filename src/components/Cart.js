@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    Platform
+    Platform,
+    Alert
 } from 'react-native'
 import Authorization from '../Authorization'
 import store from '../store'
@@ -81,7 +82,7 @@ const CartItem = ({ ...props }) => (
             />
             <Badge
                 value={`${props.count}`}
-                textStyle={{ color: 'orange' }}
+                textStyle={{ color: '#fc6800' }}
             />
         </View>
     </View>
@@ -147,63 +148,74 @@ class Cart extends Component {
     }
 
     _renderHeader() {
-        if(Object.keys(this.state.cartProducts).length > 0) {
+        if (Object.keys(this.state.cartProducts).length > 0) {
             return (<View style={styles.headerCart}>
-
+                <View style={{ flexDirection: 'column' }}>
+                    <Image
+                        style={{ height: 37, width: 32, marginBottom: 5 }}
+                        source={require('../images/emblema.png')}
+                    />
+                </View>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader}>Shopping Cart</Text>
                     <Text style={styles.textHeader2}>Blindaccess</Text>
                 </View>
-    
-                <View style={{ flexDirection: 'column', marginLeft: 25 }}>
+
+                <View style={{ flexDirection: 'column', marginLeft: 15 }}>
                     <TouchableOpacity
                         onPress={() => {
-                            this.sendOder()
+                            this.confirmSend()
                         }}
                         style={styles.categoryButtom}
                         underlayColor='#fff'>
                         <Text style={styles.textButtom}>
-                            Procesar orden
+                            Enviar 
                         </Text>
                         <Icon
                             name="shopping-cart"
-                            color="orange"
+                            color="#b3b3b3"
                             size={18}
+                            style={{marginLeft: 10}}
                         />
                     </TouchableOpacity>
                     <Text style={styles.textHeader}></Text>
                 </View>
             </View>)
-        }else{
+        } else {
             return (<View style={styles.headerCart}>
-
+                <View style={{ flexDirection: 'column' }}>
+                    <Image
+                        style={{ height: 37, width: 32, marginBottom: 5 }}
+                        source={require('../images/emblema.png')}
+                    />
+                </View>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader}>Shopping Cart</Text>
                     <Text style={styles.textHeader2}>Blindaccess</Text>
                 </View>
-    
-                
+
+
             </View>)
         }
-        
+
 
     }
 
     _renderTotals(totalOrderItems, totalOrderAmout) {
 
-        if(Object.keys(this.state.cartProducts).length > 0) {
+        if (Object.keys(this.state.cartProducts).length > 0) {
             return (<View style={styles.textWithIcon}>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader2}>Total</Text>
-                    <Text style={styles.textHeader}>{numeral(totalOrderAmout).format('$ 0,0.00')}</Text>    
+                    <Text style={styles.textHeader}>{numeral(totalOrderAmout).format('$ 0,0.00')}</Text>
                 </View>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader2}>Items</Text>
                     <Text style={styles.textHeader}>{totalOrderItems}</Text>
                 </View>
             </View>)
-        }else{
-            if(this.state.sendOk){
+        } else {
+            if (this.state.sendOk) {
                 return (<View style={styles.textWithIcon}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.textHeader3}>Estimado Cliente, su orden ha sido enviada con exito</Text>
@@ -211,7 +223,7 @@ class Cart extends Component {
                         <Text style={styles.textHeader2}>Nuestros ejecutivos se pondrán en contacto con usted a la brevedad para concretar la compra su orden.</Text>
                     </View>
                 </View>)
-            }else{
+            } else {
                 return (<View style={styles.textWithIcon}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.textHeader2}>Su carro esta vacio</Text>
@@ -219,8 +231,8 @@ class Cart extends Component {
                 </View>)
             }
 
-        }    
-        
+        }
+
 
     }
 
@@ -273,7 +285,7 @@ class Cart extends Component {
                 />
                 <Badge
                     value={`x${this.state.cartProducts[item].length}`}
-                    textStyle={{ color: 'orange' }}
+                    textStyle={{ color: '#fc6800' }}
                 />
             </View>
         </View>)
@@ -289,12 +301,25 @@ class Cart extends Component {
 
     }
 
+    confirmSend() {
+        Alert.alert(
+            'Enviar Orden',
+            '¿ Esta seguro de enviar esta orden ?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                { text: 'OK', onPress: () => this.sendOder() },
+            ],
+            { cancelable: false }
+        )
+    }
+
+
     sendOder() {
 
-        if(this.state.userProfile == null){
+        if (this.state.userProfile == null) {
             const { navigate } = this.props.navigation
             Toast.show('Para poder procesar su orden, favor complete los datos de su perfil.');
-            setTimeout(() => { navigate('SignIn')}, 3000);
+            setTimeout(() => { navigate('SignIn') }, 3000);
             return false
         }
 
@@ -307,7 +332,9 @@ class Cart extends Component {
 
         const order = {
             amount: totalOrderAmout,
-            products: store.getState().cart
+            startedAt: firebase.database.ServerValue.TIMESTAMP,
+            products: store.getState().cart,
+            state: 'pending'
         }
 
         const refUserOrder = firebase.database().ref(`orders/${this.state.user.uid}/`)
@@ -347,7 +374,7 @@ class Cart extends Component {
                 >
                     <Icon
                         name="chevron-left"
-                        color="orange"
+                        color="#fc6800"
                         size={24}
                     />
                 </TouchableOpacity>
@@ -415,7 +442,7 @@ const styles = StyleSheet.create({
     headerCart: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-
+        marginHorizontal: 10
     },
     text: {
         color: '#b3b3b3',
@@ -426,7 +453,7 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     textPrice: {
-        color: 'orange',
+        color: '#fc6800',
         fontSize: 12,
         alignContent: 'flex-start'
     },
@@ -500,8 +527,8 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     textButtom: {
-        color: 'orange',
-        fontSize: 12
+        color: '#b3b3b3',
+        fontSize: 12,
     },
     categoryButtom: {
         flexDirection: 'row',
@@ -513,6 +540,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 1,
+        paddingHorizontal: 15,
         marginTop: 0,
     },
 

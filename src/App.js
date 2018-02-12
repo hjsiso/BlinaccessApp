@@ -75,9 +75,9 @@ export default class App extends Component<{}> {
           user: user
         });
 
-        const refUserProfile = firebase.database().ref(`profile/${user.uid}/userProfile`)
-        console.log(`profile/${user.uid}/userProfile`)
-        refUserProfile.once("value", snapshot =>  {
+        const refUserProfile = firebase.database().ref(`profiles/${user.uid}/userProfile`)
+        //console.log(`profiles/${user.uid}/userProfile`)
+        refUserProfile.once("value", snapshot => {
           const userProfile = snapshot.val();
           //console.dir(snapshot.val())
           if (userProfile) {
@@ -165,7 +165,8 @@ export default class App extends Component<{}> {
           price: items[item].price,
           category: items[item].category,
           outstanding: items[item].outstanding,
-          thumbnail: items[item].images ? items[item].images[0].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8'
+          thumbnail: items[item].images ? items[item].images[0].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8',
+          topost: items[item].topost ? true : false
         });
 
 
@@ -178,6 +179,10 @@ export default class App extends Component<{}> {
         products: newState
       });
 
+      newState = _.filter(newState, item => {
+        return item.topost == true;
+      });
+      
       store.dispatch({
         type: "SET_FILTERED_LIST",
         filteredProducts: newState

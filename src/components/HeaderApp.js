@@ -19,7 +19,7 @@ const HeaderApp = props => (
         <TouchableWithoutFeedback onPress={() => props.toggle()}>
             <Icon
                 name='menu'
-                color='#f50'
+                color='#fc6800'
                 size={25}
             />
         </TouchableWithoutFeedback>
@@ -36,7 +36,7 @@ const HeaderApp = props => (
         >
             <Icon
                 name='search'
-                color='#f50'
+                color='#fc6800'
                 size={25}
             />
         </TouchableWithoutFeedback>

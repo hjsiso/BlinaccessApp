@@ -36,7 +36,7 @@ const ShowImage = props => (
             >
                 <Icon
                     name='chevron-left'
-                    color='orange'
+                    color='#fc6800'
                     size={25}
                 />
             </TouchableOpacity>
