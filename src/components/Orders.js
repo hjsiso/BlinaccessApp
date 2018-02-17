@@ -104,7 +104,7 @@ class Orders extends Component {
 
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={styles.textHeader}>Ordenes</Text>
-                            <Text style={styles.textHeader2}>Blindaccess</Text>
+                            <Text style={styles.textHeader2}>Blinaccess</Text>
                         </View>
                     </View>
                 </View>

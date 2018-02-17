@@ -7,7 +7,8 @@ import {
     Image,
     TouchableHighlight,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    Dimensions
 } from 'react-native'
 import { List, ListItem, SearchBar } from 'react-native-elements'
 import _ from "lodash"
@@ -15,7 +16,7 @@ import store from '../store';
 import firebase from '../firebase';
 import numeral from 'numeral'
 
-
+const { width, height } = Dimensions.get('window');
 
 class ListTop extends Component {
 
@@ -30,6 +31,7 @@ class ListTop extends Component {
             currentOrder: "name",
             currentCategory: store.getState().filter.category,
             currentSearch: store.getState().filter.searchString,
+            toggle: 1000
         };
 
         store.subscribe(() => {
@@ -45,7 +47,7 @@ class ListTop extends Component {
 
 
     }
-    
+
 
     /*componentDidMount() {
         const itemsRef = firebase.database().ref("/");
@@ -118,8 +120,10 @@ class ListTop extends Component {
         });
     }*/
 
-    handleChangeCategory(id) {
-
+    handleChangeCategory(id, index) {
+        this.setState({
+            toggle: index
+        })
         store.dispatch({
             type: "SET_PRODUCT_FILTER",
             filter: {
@@ -128,6 +132,9 @@ class ListTop extends Component {
                 searchString: this.state.currentSearch
             }
         });
+
+
+
 
         this.filterList(id);
     }
@@ -197,11 +204,11 @@ class ListTop extends Component {
         )
     };
 
-    _renderItemButtom(item) {
+    _renderItemButtom(item, index) {
         return (
             <TouchableOpacity
-                onPress={() => this.handleChangeCategory(item.id)}
-                style={styles.categoryButtom}
+                onPress={() => this.handleChangeCategory(item.id, index)}
+                style={[styles.categoryButtom, this.state.toggle === index && styles.textInputAlt]}
                 key={item.id}
                 underlayColor='#fff'>
                 <Text style={styles.textButtom}>
@@ -241,13 +248,13 @@ class ListTop extends Component {
         const { navigate } = this.props.navigation
 
         return (
-            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0, backgroundColor: 'white' }}>
+            <View style={{ flex: 1, marginTop: 0, marginLeft: 0, marginRight: 0, backgroundColor: '#151515' }}>
                 <View style={{ marginBottom: 5 }}>
                     <Text style={styles.textSubTitle}>Destacados</Text>
                     <FlatList
                         horizontal={true}
                         renderItem={({ item }) => this._renderItemImage(item)}
-                        ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
+                        ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
                         data={this.state.outstandingProducts}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
@@ -257,8 +264,8 @@ class ListTop extends Component {
                 <View>
                     <FlatList
                         horizontal={true}
+                        renderItem={({ item, index }) => this._renderItemButtom(item, index)}
                         ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-                        renderItem={({ item }) => this._renderItemButtom(item)}
                         data={this.state.categoriesArray}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
@@ -276,12 +283,16 @@ class ListTop extends Component {
                                 <ListItem
                                     roundAvatar
                                     title={`${item.name}`}
-                                    titleStyle={{ fontSize: 12 }}
+                                    titleStyle={{ fontSize: 14, color: '#fc6800' }}
                                     subtitle={`${numeral(item.price).format('$ 0,0.00')}`}
-                                    subtitleStyle={{ color: '#fc6800', fontSize: 14, fontWeight: 'bold' }}
+                                    subtitleStyle={{ color: '#b3b3b3', fontSize: 12, fontWeight: 'bold' }}
                                     avatar={{ uri: item.thumbnail }}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
+                                    wrapperStyle={{ backgroundColor: '#151515' }}
+                                    containerStyle={{ backgroundColor: '#151515', borderBottomWidth: 2, borderBottomColor: '#000' }}
+                                    rightIcon={{ name: 'chevron-right', color: '#b3b3b3' }}
+                                    underlayColor="#151515"
                                     onPress={
                                         () => navigate('Details', { item: item, currentImage: 0 })
                                     }
@@ -309,7 +320,7 @@ const styles = StyleSheet.create({
         color: '#fc6800',
         fontSize: 12,
         fontWeight: '600',
-        marginLeft: 10,
+        marginLeft: 15,
         marginTop: 10,
         marginBottom: 10
 
@@ -339,8 +350,13 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5
     },
-
-
+    nameContainer: {
+        backgroundColor: 'transparent'
+    },
+    textInputAlt: {
+        backgroundColor: '#b3b3b3',
+        
+    }
 });
 
 export default ListTop

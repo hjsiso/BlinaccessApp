@@ -23,10 +23,10 @@ const HeaderApp = props => (
                 size={25}
             />
         </TouchableWithoutFeedback>
-        <View>
+        <View style={{flexDirection: 'row'}}>
             <Image
-                style={{ height: 20, width: 80 }}
-                source={require('../images/logo.png')}
+                style={{ height: 20, width: 17 }}
+                source={require('../images/emblema.png')}
             />
         </View>
         <TouchableWithoutFeedback
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 0,
         paddingHorizontal: 10,
-        backgroundColor: 'white',
-        borderColor: '#f2f2f2',
+        backgroundColor: '#151515',
+       
         borderBottomWidth: 2,
     }
 

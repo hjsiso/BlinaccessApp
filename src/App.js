@@ -260,7 +260,7 @@ export default class App extends Component<{}> {
           onChange={(isOpen) => this.updateMenu(isOpen)}
           navigation={this.props.navigation}
         >
-          <MyStatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
+          <MyStatusBar backgroundColor="#151515" barStyle="light-content" />
           <HeaderApp navigation={this.props.navigation} toggle={this.toggle.bind(this)} />
           <ListTop navigation={this.props.navigation} />
         </SideMenu>

@@ -83,12 +83,12 @@ const CartItem = ({ ...props }) => (
                 <Image
                     style={styles.avatar}
                     source={{ uri: props.product.thumbnail }}
-                    style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
+                    style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15, alignContent: 'center' }}
                 />
             </TouchableOpacity>
             <Badge
                 value={`${props.count}`}
-                textStyle={{ color: '#fc6800' }}
+                textStyle={{ color: '#fc6800', fontSize: 10, width: 15, alignContent: 'center' }}
             />
         </View>
     </View>
@@ -164,7 +164,7 @@ class Cart extends Component {
                 </View>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader}>Shopping Cart</Text>
-                    <Text style={styles.textHeader2}>Blindaccess</Text>
+                    <Text style={styles.textHeader2}>Blinaccess</Text>
                 </View>
 
                 <View style={{ flexDirection: 'column', marginLeft: 15 }}>
@@ -197,7 +197,7 @@ class Cart extends Component {
                 </View>
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader}>Shopping Cart</Text>
-                    <Text style={styles.textHeader2}>Blindaccess</Text>
+                    <Text style={styles.textHeader2}>Blinaccess</Text>
                 </View>
 
 
@@ -456,13 +456,14 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     textProductName: {
-        color: '#b3b3b3',
-        fontSize: 12
+        color: '#fc6800',
+        fontSize: 14
     },
     textPrice: {
-        color: '#fc6800',
+        color: '#b3b3b3',
         fontSize: 12,
-        alignContent: 'flex-start'
+        alignContent: 'flex-start',
+        marginTop: 5
     },
     textHeader: {
         color: '#b3b3b3',
@@ -536,6 +537,7 @@ const styles = StyleSheet.create({
     textButtom: {
         color: '#b3b3b3',
         fontSize: 12,
+        marginRight: 5
     },
     categoryButtom: {
         flexDirection: 'row',

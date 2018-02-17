@@ -61,19 +61,7 @@ class Menu extends Component {
         this.props.isOpen = false;
     }
 
-    _renderItemsMenu() {
-        const genres = ["Home", "Drama", "Action", "Fantasy", "Horror", "Romance", "Crime", "Thriller", "Mystery", "Science-Fiction", "Comedy", "Family", "Music", "Adventure", "Espionage", "Supernatural"]
-        const { itemSelectedValue } = this.props
-        return genres.map((element, key) => (
-            <TouchableHighlight
-                key={key}
-                style={element == itemSelectedValue ? [styles.items, styles.itemSelected] : styles.noSelectedItems}
-                onPress={() => this.props.itemSelected(element)}
-            >
-                <Text style={styles.text}>{element}</Text>
-            </TouchableHighlight>
-        ))
-    }
+
 
     _renderSignOut() {
         const { navigate } = this.props.navigation

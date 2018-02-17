@@ -48,7 +48,7 @@ const Contact = props => (
 
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.textHeader}>Contacto</Text>
-                    <Text style={styles.textHeader2}>Blindaccess</Text>
+                    <Text style={styles.textHeader2}>Blinaccess</Text>
                 </View>
             </View>
         </View>

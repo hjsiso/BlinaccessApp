@@ -44,6 +44,7 @@ class OrderDetails extends Component {
     render() {
 
         const { order } = this.props.navigation.state.params
+        const { navigate } = this.props.navigation
         const orderProducts = _.groupBy(order.products)
 
         let arrProducts = []
@@ -86,7 +87,7 @@ class OrderDetails extends Component {
                         </View>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={styles.textHeader}>Detalle de la Orden</Text>
-                            <Text style={styles.textHeader2}>Blindaccess</Text>
+                            <Text style={styles.textHeader2}>Blinaccess</Text>
                         </View>
                         <View style={{ flexDirection: 'column' }}>
                             <Icon 
@@ -111,7 +112,7 @@ class OrderDetails extends Component {
                                     roundAvatar
                                     avatar={{ uri: item.details.thumbnail }}
                                     title={item.details.name}
-                                    titleStyle={{ fontSize: 12, color: '#fc6800', marginLeft: 5 }}
+                                    titleStyle={{ fontSize: 14, color: '#fc6800', marginLeft: 5 }}
                                     leftIcon={{ name: item.icon, color: item.iconColor }}
                                     badge={{ value: item.items, textStyle: { color: 'orange', fontSize: 12 }, containerStyle: { marginTop: 0 } }}
                                     keyExtractor={item => item}
@@ -126,16 +127,16 @@ class OrderDetails extends Component {
                     </List>
                     <View style={styles.textWithIcon}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.text1}>Total</Text>
-                            <Text style={styles.text}>{numeral(order.amount).format('$ 0,0.00')}</Text>
+                            <Text style={styles.text}>Total</Text>
+                            <Text style={styles.text1}>{numeral(order.amount).format('$ 0,0.00')}</Text>
                         </View>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.text1}>Fecha</Text>
-                            <Text style={styles.text}>{order.dateString}</Text>
+                            <Text style={styles.text}>Fecha</Text>
+                            <Text style={styles.text1}>{order.dateString}</Text>
                         </View>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.text1}>Items</Text>
-                            <Text style={styles.text}>{totalOrderItems}</Text>
+                            <Text style={styles.text}>Items</Text>
+                            <Text style={styles.text1}>{totalOrderItems}</Text>
                         </View>
                     </View>
                 </ScrollView>
@@ -204,11 +205,11 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#b3b3b3',
-        fontSize: 10
+        fontSize: 12
     },
     text1: {
         color: '#fc6800',
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: '400'
     },
     light: {
