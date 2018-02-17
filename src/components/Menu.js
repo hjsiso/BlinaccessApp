@@ -83,6 +83,23 @@ class Menu extends Component {
                 <View>
                     <TouchableHighlight
                         onPress={
+                            () => navigate('Orders')
+                        }
+                    >
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                <Text style={styles.text}>Mis Ordenes</Text>
+                            </View>
+                            <Icon
+                                style={styles.rightIcon}
+                                name="local-shipping"
+                                color="#b3b3b3"
+                                size={25}
+                            />
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        onPress={
                             () => navigate('SignIn')
                         }
                     >
@@ -93,7 +110,7 @@ class Menu extends Component {
                             <Icon
                                 style={styles.rightIcon}
                                 name="person"
-                                color="white"
+                                color="#b3b3b3"
                                 size={25}
                             />
                         </View>
@@ -110,7 +127,7 @@ class Menu extends Component {
                             <Icon
                                 style={styles.rightIcon}
                                 name="arrow-back"
-                                color="white"
+                                color="#b3b3b3"
                                 size={25}
                             />
                         </View>
@@ -229,7 +246,7 @@ class Menu extends Component {
                             <Icon
                                 style={styles.rightIcon}
                                 name="info"
-                                color="white"
+                                color="#b3b3b3"
                                 size={25}
                             />
 
@@ -249,7 +266,7 @@ class Menu extends Component {
                             <Icon
                                 style={styles.rightIcon}
                                 name="phone"
-                                color="white"
+                                color="#b3b3b3"
                                 size={25}
                             />
                         </View>

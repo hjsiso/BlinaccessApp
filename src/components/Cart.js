@@ -75,11 +75,17 @@ const CartItem = ({ ...props }) => (
             </View>
         </View>
         <View style={{ flexDirection: 'row' }}>
-            <Image
-                style={styles.avatar}
-                source={{ uri: props.product.thumbnail }}
-                style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
-            />
+            <TouchableOpacity
+                onPress={() => {
+                    props.navigate('Details', { item: props.product, currentImage: 0 })
+                }}
+            >
+                <Image
+                    style={styles.avatar}
+                    source={{ uri: props.product.thumbnail }}
+                    style={{ width: 50, height: 50, borderRadius: 25, marginRight: 15 }}
+                />
+            </TouchableOpacity>
             <Badge
                 value={`${props.count}`}
                 textStyle={{ color: '#fc6800' }}
@@ -169,13 +175,13 @@ class Cart extends Component {
                         style={styles.categoryButtom}
                         underlayColor='#fff'>
                         <Text style={styles.textButtom}>
-                            Enviar 
+                            Enviar
                         </Text>
                         <Icon
                             name="shopping-cart"
                             color="#b3b3b3"
                             size={18}
-                            style={{marginLeft: 10}}
+                            style={{ marginLeft: 10 }}
                         />
                     </TouchableOpacity>
                     <Text style={styles.textHeader}></Text>
@@ -226,7 +232,7 @@ class Cart extends Component {
             } else {
                 return (<View style={styles.textWithIcon}>
                     <View style={{ flexDirection: 'column' }}>
-                        <Text style={styles.textHeader2}>Su carro esta vacio</Text>
+                        <Text style={styles.textHeader2}>Su carro esta vacio !</Text>
                     </View>
                 </View>)
             }
@@ -353,6 +359,7 @@ class Cart extends Component {
     render() {
 
         const { goBack } = this.props.navigation
+        const { navigate } = this.props.navigation
         let arrProducts = []
         let totalOrderAmout = 0;
         let totalOrderItems = 0;
@@ -387,7 +394,7 @@ class Cart extends Component {
 
                         renderItem={({ item, index }) => {
                             return (
-                                <CartItem parentFlatList={this} countItems={this.state.countItems} product={_.find(this.state.products, { 'id': item })} count={this.state.cartProducts[item].length} />
+                                <CartItem navigate={navigate} parentFlatList={this} countItems={this.state.countItems} product={_.find(this.state.products, { 'id': item })} count={this.state.cartProducts[item].length} />
                             )
                         }}
                         keyExtractor={item => item}
