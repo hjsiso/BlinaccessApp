@@ -55,7 +55,7 @@ const About = props => (
         </View>
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.description}>
-                <Text style={[styles.text, styles.light]}>
+                <Text style={[styles.text, styles.thick]}>
                     {`Somos una empresa venezolana fundada en 2011, comercializadora de materia prima y accesorios para el Blindaje de Vehículos Automotrices.`}
                 </Text>
             </View>
@@ -144,6 +144,9 @@ const styles = StyleSheet.create({
     },
     light: {
         fontWeight: '200'
+    },
+    thick: {
+        fontWeight: '400'
     }
 })
 

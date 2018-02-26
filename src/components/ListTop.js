@@ -31,7 +31,8 @@ class ListTop extends Component {
             currentOrder: "name",
             currentCategory: store.getState().filter.category,
             currentSearch: store.getState().filter.searchString,
-            toggle: 1000
+            toggle: 1000,
+            selected: 10000
         };
 
         store.subscribe(() => {
@@ -265,7 +266,7 @@ class ListTop extends Component {
                     <FlatList
                         horizontal={true}
                         renderItem={({ item, index }) => this._renderItemButtom(item, index)}
-                        ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
+                        ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
                         data={this.state.categoriesArray}
                         keyExtractor={(item, index) => index}
                         showsHorizontalScrollIndicator={false}
@@ -278,7 +279,7 @@ class ListTop extends Component {
                     >
                         <FlatList
                             data={this.state.items}
-                            renderItem={({ item }) => (
+                            renderItem={({ item, index }) => (
 
                                 <ListItem
                                     roundAvatar
@@ -287,6 +288,8 @@ class ListTop extends Component {
                                     subtitle={`${numeral(item.price).format('$ 0,0.00')}`}
                                     subtitleStyle={{ color: '#b3b3b3', fontSize: 12, fontWeight: 'bold' }}
                                     avatar={{ uri: item.thumbnail }}
+                                    avatarStyle={{width: 60, height: 60, borderRadius: 30}}
+                                    avatarContainerStyle={{width: 80, height: 80}}
                                     containerStyle={{ borderBottomWidth: 0 }}
                                     keyExtractor={item => item.price}
                                     wrapperStyle={{ backgroundColor: '#151515' }}
@@ -294,7 +297,10 @@ class ListTop extends Component {
                                     rightIcon={{ name: 'chevron-right', color: '#b3b3b3' }}
                                     underlayColor="#151515"
                                     onPress={
-                                        () => navigate('Details', { item: item, currentImage: 0 })
+                                        () => {
+                                            //this.setState({ selected: index })
+                                            navigate('Details', { item: item, currentImage: 0 })
+                                        }
                                     }
                                 />
                             )}
@@ -354,8 +360,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     textInputAlt: {
-        backgroundColor: '#b3b3b3',
-        
+        backgroundColor: '#454545',
+    },
+    itemSelected: {
+        color: '#fc6800'
     }
 });
 

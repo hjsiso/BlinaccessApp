@@ -25,7 +25,7 @@ const HeaderApp = props => (
         </TouchableWithoutFeedback>
         <View style={{flexDirection: 'row'}}>
             <Image
-                style={{ height: 20, width: 17 }}
+                style={{ height: 20, width: 18 }}
                 source={require('../images/emblema.png')}
             />
         </View>
