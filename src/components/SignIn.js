@@ -80,11 +80,14 @@ class SignIn extends Component {
             company: store.getState().userProfile ? store.getState().userProfile.company : ''
         }
 
-        
+
 
     }
 
     componentDidMount() {
+        //const { parentUnsubscribe } = this.props.navigation.state.params
+        // parentUnsubscribe();
+
         this.unsubscribe = store.subscribe(() => {
             this.setState({
                 user: store.getState().user,
@@ -205,6 +208,7 @@ class SignIn extends Component {
     }
 
     saveProfile() {
+
         const userProfile = {
             name: this.state.user.displayName,
             phone: this.state.phone,
@@ -212,15 +216,39 @@ class SignIn extends Component {
             email: this.state.user.email,
             photoURL: this.state.user.photoURL
         }
-        const refUserProfile = firebase.database().ref(`profiles/${this.state.user.uid}/`)
-        refUserProfile.set({ userProfile}).then(() => {
-            store.dispatch({
-                type: "SET_USER_PROFILE",
-                userProfile: userProfile
-            });
-            Toast.show(`Los datos fueron guardados.`);
+
+        let tmpPhone = this.state.phone.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
+
+
+        const refContact = firebase.database().ref(`contacts/${tmpPhone}`)
+        refContact.once("value", snapshot => {
+            let contact = snapshot.val();
+
+            //console.dir(snapshot.val())
+            return contact;
+        }).then((contact) => {
+            const { navigate } = this.props.navigation
+            if (contact.val()) {
+                const refUserProfile = firebase.database().ref(`profiles/${this.state.user.uid}/`)
+                refUserProfile.set({ userProfile }).then(() => {
+                    store.dispatch({
+                        type: "SET_USER_PROFILE",
+                        userProfile: userProfile
+                    });
+                    Toast.show(`Los datos fueron guardados.`);
+                    navigate('Home');
+                })
+            } else {
+                Toast.show(`Acceso no permitido.`);
+            }
         })
+
+
+
     }
+
+
+
     _renderSignIn() {
         if (!this.state.user) {
             return (<View>
@@ -277,12 +305,13 @@ class SignIn extends Component {
                         <View style={styles.avatarImage}>
                             <Text style={styles.textWellcome}>{this.state.user.displayName}</Text>
                         </View>
+                        <View style={styles.avatarImage}>
+                            <Text style={styles.text}>Estimado cliente, para acceder a nuestro catalogo de porductos por favor complete los siguientes datos de su perfil.</Text>
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.avatarImage}>
-                    <Text style={styles.text}>Por favor completa los siguientes datos de tu perfil</Text>
-                </View>
+
                 <View style={styles.containerForm}>
                     <Text style={styles.textLabel}>Teléfono</Text>
                     <TextInputMask
@@ -337,7 +366,7 @@ class SignIn extends Component {
         } else if (this.state.company === "" || this.state.company.length === 0) {
             Toast.show(`Por favor indique el nombre de su compaña`);
             //this.refs['company'].getElement().focus()
-        }else{
+        } else {
             this.saveProfile()
         }
 
@@ -347,7 +376,7 @@ class SignIn extends Component {
     render() {
 
         const { goBack } = this.props.navigation
-        
+        const { navigate } = this.props.navigation
 
         return (
 
@@ -355,7 +384,7 @@ class SignIn extends Component {
                 <MyStatusBar backgroundColor="#151515" barStyle="light-content" />
                 <View style={styles.closeButton}>
                     <TouchableOpacity
-                        onPress={() => goBack()}
+                        onPress={() => navigate('Home')}
                     >
                         <Icon
                             name='chevron-left'
@@ -407,6 +436,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 15,
         marginTop: 10
     },
     textWellcome: {

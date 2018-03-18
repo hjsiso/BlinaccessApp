@@ -15,6 +15,7 @@ import _ from "lodash"
 import store from '../store';
 import firebase from '../firebase';
 import numeral from 'numeral'
+import Authorization from '../Authorization'
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,7 +36,11 @@ class ListTop extends Component {
             selected: 10000
         };
 
-        store.subscribe(() => {
+    }
+
+    componentDidMount() {
+
+        this.unsubscribe = store.subscribe(() => {
             this.setState({
                 items: store.getState().filteredProducts,
                 allItems: store.getState().products,
@@ -45,81 +50,12 @@ class ListTop extends Component {
                 categoriesArray: store.getState().categoriesArray
             });
         });
-
-
     }
 
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
 
-    /*componentDidMount() {
-        const itemsRef = firebase.database().ref("/");
-        itemsRef.child("products").on("value", snapshot => {
-            let items = snapshot.val();
-            let newState = [];
-            for (let item in items) {
-                newState.push({
-                    id: item,
-                    name: items[item].name,
-                    images: items[item].images,
-                    description: items[item].description,
-                    price: items[item].price,
-                    category: items[item].category,
-                    outstanding: items[item].outstanding,
-                    thumbnail: items[item].images ? items[item].images[0].original : 'https://firebasestorage.googleapis.com/v0/b/blindaccesapp.appspot.com/o/img%2Flogo-symbol.png?alt=media&token=c01068e4-9b25-4894-b180-cd83770dfdc8'
-                }); 
-                
-
-            }
-
-            newState = _.orderBy(newState, this.state.currentOrder);
-            
-            store.dispatch({
-                type: "SET_PRODUCT_LIST",
-                products: newState
-            });
-
- 
-
-
-
-        });
-
-
-
-        this.loadCategories();
-
-        this.filterList();
-    }*/
-
-    /*loadCategories() {
-        const itemsRef = firebase.database().ref("/");
-        itemsRef.child("categories").on("value", snapshot => {
-            let items = snapshot.val();
-            let newState = [];
-
-            newState.push({
-                id: '',
-                categoryName: 'Todas'
-            });
-
-            for (let item in items) {
-                newState.push({
-                    id: item,
-                    categoryName: items[item].categoryName
-                });
-            }
-
-  
-
-            store.dispatch({
-                type: "SET_CATEGORY_ARRAY",
-                categoriesArray: newState
-            })
-            store.dispatch({
-                type: "SET_CATEGORY_LIST",
-                categories: snapshot.val()
-            })
-        });
-    }*/
 
     handleChangeCategory(id, index) {
         this.setState({
@@ -153,15 +89,11 @@ class ListTop extends Component {
             items = _.filter(items, item => {
                 return item.category == categoryFilter;
             });
-            /*this.setState({
-                items: items
-            });*/
+
         }
         if (this.state.currentOrder !== "") {
             items = _.orderBy(items, this.state.currentOrder)
-            /*this.setState({
-                items: _.orderBy(items, this.state.currentOrder)
-            });*/
+
         }
         if (this.state.currentSearch !== "") {
             items = _.filter(items, item => {
@@ -169,7 +101,6 @@ class ListTop extends Component {
                     item.name.toLowerCase().search(this.state.currentSearch.toLowerCase()) !== -1
                 );
             });
-            /*this.setState({ items: items });*/
         }
 
         store.dispatch({
@@ -185,8 +116,6 @@ class ListTop extends Component {
                 searchString: this.state.currentSearch
             }
         });
-
-        //this.setState({ outstandingProducts });
 
     }
 
@@ -298,7 +227,6 @@ class ListTop extends Component {
                                     underlayColor="#151515"
                                     onPress={
                                         () => {
-                                            //this.setState({ selected: index })
                                             navigate('Details', { item: item, currentImage: 0 })
                                         }
                                     }
@@ -367,4 +295,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ListTop
+export default Authorization(ListTop)

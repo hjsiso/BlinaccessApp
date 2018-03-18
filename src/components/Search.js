@@ -12,6 +12,8 @@ import {
 import { List, ListItem, SearchBar } from 'react-native-elements'
 import store from '../store'
 import _ from "lodash"
+import Authorization from '../Authorization'
+
 
 const { width, height } = Dimensions.get('window')
 
@@ -27,6 +29,7 @@ class Search extends Component {
         this.state = {
             items: [],
             allItems: store.getState().products,
+            userProfile: store.getState().userProfile,
             categories: null,
             categoriesArray: [],
             currentSearch: '',
@@ -34,10 +37,23 @@ class Search extends Component {
 
     }
 
+
+    componentDidMount() {
+        this.unsubscribe =  store.subscribe(() => {
+            this.setState({
+                userProfile: store.getState().userProfile
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
     filterList() {
         let items = this.state.allItems;
 
-        if (this.state.currentSearch !== "") {
+        if (this.state.currentSearch !== "" && this.state.userProfile) {
             items = _.filter(items, item => {
                 return (
                     item.name.toLowerCase().search(this.state.currentSearch.toLowerCase()) !== -1

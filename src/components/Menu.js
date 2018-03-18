@@ -49,7 +49,7 @@ class Menu extends Component {
     }
 
     _signOut() {
-
+        const { navigate } = this.props.navigation
         auth.signOut()
             .then(() => {
                 store.dispatch({
@@ -57,6 +57,11 @@ class Menu extends Component {
                     user: null
                 });
 
+                store.dispatch({
+                    type: "SET_USER_PROFILE",
+                    user: null
+                });
+                navigate('Home');
             })
         this.props.isOpen = false;
     }
